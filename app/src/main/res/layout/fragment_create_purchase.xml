@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.createPurchase.CreatePurchaseFragment">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:id="@+id/linearLayout" app:layout_constraintBottom_toBottomOf="parent">
+        <Spinner
+                android:layout_width="0dp"
+                android:layout_weight="100"
+                android:layout_height="wrap_content"
+                android:id="@+id/marketList"
+        />
+    </LinearLayout>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Criar Novo Mercado"
+            android:layout_margin="5dp"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            android:backgroundTint="@color/teal_700"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/purchase_create_market_button"/>
+
+    <Button
+            android:id="@+id/create_purchase_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Criar Lista"
+            android:layout_margin="20dp"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:backgroundTint="@color/positiveAction"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="88dp" app:layout_constraintTop_toBottomOf="@+id/create_purchase"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
