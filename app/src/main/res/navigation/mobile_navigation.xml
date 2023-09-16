@@ -44,7 +44,7 @@
     <fragment
             android:id="@+id/nav_purchase"
             android:name="br.com.ronistone.marketlist.ui.purchase.PurchaseFragment"
-            android:label="@string/menu_create_market"
+            android:label="@string/menu_purchase"
             tools:layout="@layout/fragment_create_market">
         <action android:id="@+id/action_nav_purchase_to_nav_home"
                 app:destination="@id/nav_home"

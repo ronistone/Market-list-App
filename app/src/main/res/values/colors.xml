@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="positiveAction">#4CAF50</color>
+    <color name="select_item">#A1A5A1</color>
 </resources>

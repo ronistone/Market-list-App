@@ -12,4 +12,7 @@
     <string name="menu_create_market">Create Market</string>
     <string name="menu_purchase">Purchase</string>
     <string name="button">Button</string>
+
+    <string name="action_selected">%1$d Selected</string>
+<!--    <string name="add_item_fragment_label">%s %s</string>-->
 </resources>

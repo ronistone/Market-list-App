@@ -2,6 +2,7 @@ package br.com.ronistone.marketlist
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -25,7 +26,6 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -36,6 +36,20 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        navController.addOnDestinationChangedListener { controller, destionation, bundler ->
+            when(controller.currentDestination?.id) {
+                R.id.nav_purchase -> {
+                    binding.appBarMain.fab.show()
+                }
+                R.id.nav_home -> {
+                    binding.appBarMain.fab.show()
+                }
+                else -> {
+                    binding.appBarMain.fab.hide()
+                }
+            }
+        }
+
         binding.appBarMain.fab.setOnClickListener { view ->
             navController.navigate(R.id.action_nav_home_to_nav_create_purchase)
         }
@@ -44,7 +58,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+
+//        val deleteToolbarButton: MenuItem? = menu.findItem(R.id.action_delete)
+//        deleteToolbarButton?.isVisible = false
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+            R.id.action_delete -> true
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
