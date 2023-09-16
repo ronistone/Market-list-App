@@ -8,9 +8,10 @@ data class PurchaseItem(
     val productInstance: ProductInstance,
     val createdAt: Date,
     val quantity: Int,
-    val purchased: Boolean
+    var purchased: Boolean
 ) {
+
     override fun toString(): String {
-        return "PurchaseItem(id=$id, purchase=$purchase, productInstance=$productInstance, createdAt=$createdAt)"
+        return "PurchaseItem(id=$id, purchase=$purchase, productInstance=$productInstance, createdAt=$createdAt, quantity=$quantity, purchased=$purchased)"
     }
 }

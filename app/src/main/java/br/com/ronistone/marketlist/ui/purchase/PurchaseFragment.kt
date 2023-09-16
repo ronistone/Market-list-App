@@ -42,14 +42,14 @@ class PurchaseFragment : Fragment() {
 
         _binding = FragmentPuchaseBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val marketName: TextView = binding.purchaseMarketName
-        val purchaseDate: TextView = binding.purchaseDate
+//        val marketName: TextView = binding.purchaseMarketName
+//        val purchaseDate: TextView = binding.purchaseDate
         val purchaseTotalSpent: TextView = binding.purchaseTotalSpent
         val purchaseTotalExpected: TextView = binding.purchaseTotalExpected
 
         val recyclerView: RecyclerView = binding.PurchaseList
 
-        val adapter = PurchaseItemAdapter(emptyList())
+        val adapter = PurchaseItemAdapter(purchaseViewModel, emptyList())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
@@ -58,14 +58,14 @@ class PurchaseFragment : Fragment() {
                 goHome()
             } else {
                 Log.i("PURCHASE", purchase.toString())
-                marketName.text = purchase.market?.name
+//                marketName.text = purchase.market?.name
                 val formatter = DateFormat.getLongDateFormat(context)
                 val localDate = formatter.format(purchase.createdAt)
-                purchaseDate.text = localDate
+//                purchaseDate.text = localDate
                 val totalSpent = purchase.totalSpent / 100.0
                 val totalExpected = purchase.totalExpected / 100.0
-                purchaseTotalSpent.text = "Total Gasto: R$ %.2f".format(totalSpent)
-                purchaseTotalExpected.text = "Total Esperado: R$ %.2f".format(totalExpected)
+                purchaseTotalSpent.text = "Valor Gasto: R$ %.2f".format(totalSpent)
+                purchaseTotalExpected.text = "Valor Esperado: R$ %.2f".format(totalExpected)
                 purchase.items?.let { adapter.replaceItems(it) }
             }
         }
