@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class PuchaseViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
 
     val purchaseRepository: PurchaseApi = PurchaseApi.create()
 
@@ -55,7 +54,7 @@ class PuchaseViewModel : ViewModel() {
 
     fun updateItem(view: View, item: PurchaseItem) {
         processRequest(view) {
-            val response = purchaseItemRepository.updateItem(item.purchase.id!!, item.id, item)
+            val response = purchaseItemRepository.updateItem(item.purchase?.id!!, item.id!!, item)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     purchase.postValue(response.body())
@@ -68,7 +67,7 @@ class PuchaseViewModel : ViewModel() {
 
     fun addItem(view: View, item: PurchaseItem) {
         processRequest(view) {
-            val response = purchaseItemRepository.addItem(item.purchase.id!!, item)
+            val response = purchaseItemRepository.addItem(item.purchase?.id!!, item)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     purchase.postValue(response.body())
@@ -81,7 +80,7 @@ class PuchaseViewModel : ViewModel() {
 
     fun removeItem(view: View, item: PurchaseItem) {
         processRequest(view) {
-            val response = purchaseItemRepository.removeItem(item.purchase.id!!, item.id)
+            val response = purchaseItemRepository.removeItem(item.purchase?.id!!, item.id!!)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     purchase.postValue(response.body())

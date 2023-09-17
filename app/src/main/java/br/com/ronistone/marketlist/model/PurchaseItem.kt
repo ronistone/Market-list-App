@@ -2,13 +2,13 @@ package br.com.ronistone.marketlist.model
 
 import java.util.Date
 
-data class PurchaseItem(
-    val id: Int,
-    val purchase: Purchase,
+data class PurchaseItem @JvmOverloads constructor(
+    val id: Int? = null,
+    val purchase: Purchase? = null,
     val productInstance: ProductInstance,
-    val createdAt: Date,
-    val quantity: Int,
-    var purchased: Boolean
+    val createdAt: Date? = null,
+    val quantity: Int = 1,
+    var purchased: Boolean = false
 ) {
 
     override fun toString(): String {

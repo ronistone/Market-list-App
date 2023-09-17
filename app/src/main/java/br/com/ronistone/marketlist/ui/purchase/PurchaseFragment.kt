@@ -23,10 +23,13 @@ import br.com.ronistone.marketlist.R
 import br.com.ronistone.marketlist.adapter.PurchaseItemDetailsLookup
 import br.com.ronistone.marketlist.adapter.PurchaseItemKeyProvider
 import br.com.ronistone.marketlist.databinding.FragmentPuchaseBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class PurchaseFragment : Fragment() {
 
 
+    private var purchaseId: Int? = null
+    private var fab: FloatingActionButton? = null
     private var deleteToolbarButton: ActionMenuItemView? = null
     private var toolbar: Toolbar? = null
     private lateinit var adapter: PurchaseItemAdapter
@@ -93,13 +96,13 @@ class PurchaseFragment : Fragment() {
 
         val bundle = this.arguments
 
-        val id = bundle?.getInt("purchaseId")
+        purchaseId = bundle?.getInt("purchaseId")
 
-        if(id == null) {
+        if(purchaseId == null) {
             goHome()
         }
 
-        purchaseViewModel.fetch(root, id!!)
+        purchaseViewModel.fetch(root, purchaseId!!)
 
         return root
 
@@ -169,6 +172,13 @@ class PurchaseFragment : Fragment() {
         val mainActivity = activity as MainActivity
         toolbar = mainActivity.findViewById(R.id.toolbar)
         deleteToolbarButton = mainActivity.findViewById(R.id.action_delete)
+        fab = mainActivity.findViewById(R.id.fab)
+        fab?.show()
+        fab?.setOnClickListener { view ->
+            val bundle = Bundle()
+            bundle.putInt("purchaseId", viewModel.purchase.value?.id!!)
+            navController?.navigate(R.id.action_nav_purchase_to_nav_add_item, bundle)
+        }
         deleteToolbarButton?.setOnClickListener {
             adapter!!.currentList.filter {
                 tracker.selection.contains(it.id.toString())

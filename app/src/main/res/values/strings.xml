@@ -10,6 +10,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_create_purchase">Create Purchase</string>
     <string name="menu_create_market">Create Market</string>
+    <string name="menu_add_item">Add Item</string>
     <string name="menu_purchase">Purchase</string>
     <string name="button">Button</string>
 

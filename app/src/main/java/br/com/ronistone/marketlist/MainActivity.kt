@@ -43,15 +43,14 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_home -> {
                     binding.appBarMain.fab.show()
+                    binding.appBarMain.fab.setOnClickListener { view ->
+                        navController.navigate(R.id.action_nav_home_to_nav_create_purchase)
+                    }
                 }
                 else -> {
                     binding.appBarMain.fab.hide()
                 }
             }
-        }
-
-        binding.appBarMain.fab.setOnClickListener { view ->
-            navController.navigate(R.id.action_nav_home_to_nav_create_purchase)
         }
     }
 
