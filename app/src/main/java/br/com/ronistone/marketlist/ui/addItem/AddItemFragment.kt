@@ -90,7 +90,9 @@ class AddItemFragment : Fragment() {
                             size = Integer.parseInt(productSize.text.toString()),
                             unit = productUnit.text.toString()
                         )
-                    )
+                    ),
+                    quantity = Integer.parseInt(itemQuantity.text.toString())
+
                 )
                 viewModel.addItem(root, purchaseItem){
                     goPurchase()
