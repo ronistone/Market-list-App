@@ -17,7 +17,7 @@ class AddItemViewModel : RequestHandler() {
     val purchaseItemApi: PurchaseItemApi = PurchaseItemApi.create()
 
     val productsSearch = MutableLiveData<List<Product>>()
-    val selectedProduct = MutableLiveData<Product>()
+    val selectedProduct = MutableLiveData<Product?>()
     val purchase = MutableLiveData<Purchase>()
 
 
@@ -46,7 +46,8 @@ class AddItemViewModel : RequestHandler() {
                     selectedProduct.postValue(response.body())
                 } else {
                     Log.e("AddItemViewModel", "Error: ${response.message()}")
-                    onError(view, errorMessage)
+                    selectedProduct.postValue(Product(ean=ean))
+//                    onError(view, errorMessage)
                 }
             }
         }

@@ -1,5 +1,6 @@
 package br.com.ronistone.marketlist
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,9 +12,19 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import br.com.ronistone.marketlist.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+//    companion object {
+//        private const val REQUEST_CODE_PERMISSIONS = 10
+//        private val REQUIRED_PERMISSIONS =
+//            mutableListOf (
+//                Manifest.permission.CAMERA
+//            ).toTypedArray()
+//    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -26,6 +37,12 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        if (!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(
+                this, REQUIRED_PERMISSIONS, Companion.REQUEST_CODE_PERMISSIONS
+            )
+        }
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -36,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        navController.addOnDestinationChangedListener { controller, destionation, bundler ->
+        navController.addOnDestinationChangedListener { controller, _, _ ->
             when(controller.currentDestination?.id) {
                 R.id.nav_purchase -> {
                     binding.appBarMain.fab.show()
@@ -76,5 +93,17 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    companion object {
+        private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS =
+            mutableListOf (
+                android.Manifest.permission.CAMERA
+            ).toTypedArray()
     }
 }

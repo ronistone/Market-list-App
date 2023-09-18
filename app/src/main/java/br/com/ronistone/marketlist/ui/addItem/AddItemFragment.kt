@@ -11,8 +11,11 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import br.com.ronistone.marketlist.R
 import br.com.ronistone.marketlist.adapter.ProductNameArrayAdapter
 import br.com.ronistone.marketlist.databinding.FragmentAddItemBinding
 import br.com.ronistone.marketlist.model.Product
@@ -24,6 +27,7 @@ import java.lang.Double.parseDouble
 
 class AddItemFragment : Fragment() {
 
+    private lateinit var cameraButton: Button
     private var purchaseId: Int? = null
     private lateinit var itemPrice: EditText
     private lateinit var addButton: Button
@@ -58,6 +62,7 @@ class AddItemFragment : Fragment() {
         itemQuantity = binding.itemQuantity
         itemPrice = binding.itemPrice
         addButton = binding.purchaseItemAdd
+        cameraButton = binding.productEanCameraOpen
 
         val productsNameAdapter = ProductNameArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         productName.setAdapter(productsNameAdapter)
@@ -72,6 +77,15 @@ class AddItemFragment : Fragment() {
         productName.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, _ ->
             val product = productsNameAdapter.getItem(position)
             viewModel.selectedProduct.postValue(product)
+        }
+
+        cameraButton.setOnClickListener {
+            setFragmentResultListener("EAN_KEY") { key, bundle ->
+                val result = bundle.getString("EAN_RESULT")
+                viewModel.queryEan(root, result!!)
+                productEan.setText(result)
+            }
+            navController?.navigate(R.id.action_nav_add_item_to_nav_camera_barcode)
         }
 
         addButton.setOnClickListener {
@@ -101,14 +115,25 @@ class AddItemFragment : Fragment() {
         }
 
         viewModel.productsSearch.observe(viewLifecycleOwner) {
-            productsNameAdapter.update(it.toMutableList())
+            if(it != null) {
+                productsNameAdapter.update(it.toMutableList())
+            } else {
+                productsNameAdapter.update(mutableListOf())
+            }
         }
 
         viewModel.selectedProduct.observe(viewLifecycleOwner) {
-            productName.setText(it.name)
-            productEan.setText(it.ean)
-            productSize.setText(it.size.toString())
-            productUnit.setText(it.unit)
+            if(it != null) {
+                productName.setText(it.name)
+                productEan.setText(it.ean)
+                productSize.setText(it.size?.toString())
+                productUnit.setText(it.unit)
+            } else {
+                productName.setText("")
+                productEan.setText("")
+                productSize.setText("")
+                productUnit.setText("")
+            }
         }
 
 

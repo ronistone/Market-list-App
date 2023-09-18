@@ -54,6 +54,13 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
 
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+    implementation("androidx.camera:camera-mlkit-vision:1.2.0-beta02")
+    val camerax_version = "1.2.1"
+    implementation("androidx.camera:camera-core:${camerax_version}")
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
 
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
