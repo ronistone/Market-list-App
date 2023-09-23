@@ -85,8 +85,10 @@ class AddItemFragment : Fragment() {
         cameraButton.setOnClickListener {
             setFragmentResultListener("EAN_KEY") { key, bundle ->
                 val result = bundle.getString("EAN_RESULT")
-                viewModel.queryEan(root, result!!)
-                productEan.setText(result)
+                viewModel.queryEan(root, result!!) {
+                    productEan.setText(result)
+                }
+
             }
             navController?.navigate(R.id.action_nav_add_item_to_nav_camera_barcode)
         }
@@ -140,38 +142,16 @@ class AddItemFragment : Fragment() {
                 productSize.setText(it.size?.toString())
                 productUnit.setText(it.unit)
                 itemQuantity.requestFocus()
-
-                if(it.id != null) {
-                    disableProductFields()
-                }
             } else {
                 productName.setText("")
                 productEan.setText("")
                 productSize.setText("")
                 productUnit.setText("")
-
-                enableProductFields()
             }
         }
 
 
         return root
-    }
-
-    private fun enableProductFields() {
-        productName.isEnabled = true
-        productEan.isEnabled = true
-        productSize.isEnabled = true
-        productUnit.isEnabled = true
-        updateProduct.visibility = View.GONE
-    }
-
-    private fun disableProductFields() {
-        productName.isEnabled = false
-        productEan.isEnabled = false
-        productSize.isEnabled = false
-        productUnit.isEnabled = false
-//        updateProduct.visibility = View.VISIBLE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

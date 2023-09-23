@@ -37,7 +37,7 @@ class AddItemViewModel : RequestHandler() {
     }
 
 
-    fun queryEan(view: View, ean: String) {
+    fun queryEan(view: View, ean: String, onFinish: () -> Unit) {
         val errorMessage = "Failed to Query Product with this Ean $ean"
         this.processRequest(view, errorMessage) {
             val response = productApi.getProductByEan(ean)
@@ -46,8 +46,7 @@ class AddItemViewModel : RequestHandler() {
                     selectedProduct.postValue(response.body())
                 } else {
                     Log.e("AddItemViewModel", "Error: ${response.message()}")
-                    selectedProduct.postValue(Product(ean=ean))
-//                    onError(view, errorMessage)
+                    onFinish()
                 }
             }
         }
