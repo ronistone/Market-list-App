@@ -11,7 +11,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -27,6 +26,7 @@ import java.lang.Double.parseDouble
 
 class AddItemFragment : Fragment() {
 
+    private lateinit var updateProduct: Button
     private lateinit var clearButton: Button
     private lateinit var cameraButton: Button
     private var purchaseId: Int? = null
@@ -65,6 +65,7 @@ class AddItemFragment : Fragment() {
         addButton = binding.purchaseItemAdd
         cameraButton = binding.productEanCameraOpen
         clearButton = binding.purchaseItemClearForm
+        updateProduct = binding.purchaseItemProductUpdate
 
         val productsNameAdapter = ProductNameArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         productName.setAdapter(productsNameAdapter)
@@ -98,7 +99,11 @@ class AddItemFragment : Fragment() {
                         id = purchaseId
                     ),
                     productInstance = ProductInstance(
-                        price = (parseDouble(itemPrice.text.toString()) * 100).toInt(),
+                        price = (if(itemPrice.text.isNotBlank()){
+                            (parseDouble(itemPrice.text.toString()) * 100).toInt()
+                        } else {
+                            null
+                        }),
 
                         product = Product(
                             ean = productEan.text?.toString(),
@@ -135,16 +140,38 @@ class AddItemFragment : Fragment() {
                 productSize.setText(it.size?.toString())
                 productUnit.setText(it.unit)
                 itemQuantity.requestFocus()
+
+                if(it.id != null) {
+                    disableProductFields()
+                }
             } else {
                 productName.setText("")
                 productEan.setText("")
                 productSize.setText("")
                 productUnit.setText("")
+
+                enableProductFields()
             }
         }
 
 
         return root
+    }
+
+    private fun enableProductFields() {
+        productName.isEnabled = true
+        productEan.isEnabled = true
+        productSize.isEnabled = true
+        productUnit.isEnabled = true
+        updateProduct.visibility = View.GONE
+    }
+
+    private fun disableProductFields() {
+        productName.isEnabled = false
+        productEan.isEnabled = false
+        productSize.isEnabled = false
+        productUnit.isEnabled = false
+//        updateProduct.visibility = View.VISIBLE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

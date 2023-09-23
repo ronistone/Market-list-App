@@ -28,8 +28,12 @@ class PurchaseItemAdapter(val purchaseViewModel: PuchaseViewModel, var items: Li
 
         fun bind(item: PurchaseItem, position: Int) {
             binding.purchaseMarket.text = item.productInstance.product.name
-            val price = item.productInstance.price / 100.0
-            binding.purchaseValue.text = "%d x R$ %.2f".format(item.quantity, price)
+            if(item.productInstance.price != null){
+                binding.purchaseValue.text = "%d x R$ %.2f".format(item.quantity, item.productInstance.price / 100.0)
+            } else {
+                binding.purchaseValue.text = "%d x R$ ---".format(item.quantity)
+            }
+
             binding.purchased.isChecked = item.purchased
             binding.purchased.setOnClickListener {
                 Log.i("PURCHASE ITEM", item.toString())

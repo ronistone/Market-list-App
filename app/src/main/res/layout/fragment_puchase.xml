@@ -61,6 +61,21 @@
                       android:textAlignment="textStart"
                       android:textAppearance="@style/TextAppearance.AppCompat.Small"
             />
+            <TextView android:id="@+id/purchaseWithoutPrice"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      app:layout_constraintTop_toTopOf="parent"
+                      app:layout_constraintStart_toStartOf="parent"
+                      tools:text="@tools:sample/cities"
+                      android:background="#D3FFFFFF"
+                      android:padding="2dp"
+                      android:lines="2"
+                      android:maxLines="3"
+                      android:textStyle="bold"
+                      android:textAlignment="textStart"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            />
 
     </LinearLayout>
 

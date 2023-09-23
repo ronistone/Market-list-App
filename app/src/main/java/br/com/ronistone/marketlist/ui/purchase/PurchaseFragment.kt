@@ -60,10 +60,9 @@ class PurchaseFragment : Fragment() {
 
         _binding = FragmentPuchaseBinding.inflate(inflater, container, false)
         val root: View = binding.root
-//        val marketName: TextView = binding.purchaseMarketName
-//        val purchaseDate: TextView = binding.purchaseDate
         val purchaseTotalSpent: TextView = binding.purchaseTotalSpent
         val purchaseTotalExpected: TextView = binding.purchaseTotalExpected
+        val itemsWithoutPrice: TextView = binding.purchaseWithoutPrice
 
         recyclerView = binding.PurchaseList
 
@@ -82,8 +81,10 @@ class PurchaseFragment : Fragment() {
                 setTitle()
                 val totalSpent = purchase.totalSpent / 100.0
                 val totalExpected = purchase.totalExpected / 100.0
+                val itemsWithoutPriceQtd = purchase.items?.filter { it.productInstance.price == null }?.count() ?: 0
                 purchaseTotalSpent.text = "Valor Gasto: R$ %.2f".format(totalSpent)
                 purchaseTotalExpected.text = "Valor Esperado: R$ %.2f".format(totalExpected)
+                itemsWithoutPrice.text = "Itens Sem Preço: %d".format(itemsWithoutPriceQtd)
                 purchase.items?.let { adapter.submitList(it) }
             }
         }
