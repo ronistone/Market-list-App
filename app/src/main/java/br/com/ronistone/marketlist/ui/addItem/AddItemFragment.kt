@@ -26,7 +26,6 @@ import java.lang.Double.parseDouble
 
 class AddItemFragment : Fragment() {
 
-    private lateinit var updateProduct: Button
     private lateinit var clearButton: Button
     private lateinit var cameraButton: Button
     private var purchaseId: Int? = null
@@ -65,7 +64,6 @@ class AddItemFragment : Fragment() {
         addButton = binding.purchaseItemAdd
         cameraButton = binding.productEanCameraOpen
         clearButton = binding.purchaseItemClearForm
-        updateProduct = binding.purchaseItemProductUpdate
 
         val productsNameAdapter = ProductNameArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         productName.setAdapter(productsNameAdapter)
