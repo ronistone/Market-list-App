@@ -27,6 +27,7 @@ import java.lang.Double.parseDouble
 
 class AddItemFragment : Fragment() {
 
+    private lateinit var clearButton: Button
     private lateinit var cameraButton: Button
     private var purchaseId: Int? = null
     private lateinit var itemPrice: EditText
@@ -63,6 +64,7 @@ class AddItemFragment : Fragment() {
         itemPrice = binding.itemPrice
         addButton = binding.purchaseItemAdd
         cameraButton = binding.productEanCameraOpen
+        clearButton = binding.purchaseItemClearForm
 
         val productsNameAdapter = ProductNameArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         productName.setAdapter(productsNameAdapter)
@@ -114,6 +116,10 @@ class AddItemFragment : Fragment() {
             }
         }
 
+        clearButton.setOnClickListener {
+            viewModel.selectedProduct.postValue(null)
+        }
+
         viewModel.productsSearch.observe(viewLifecycleOwner) {
             if(it != null) {
                 productsNameAdapter.update(it.toMutableList())
@@ -128,6 +134,7 @@ class AddItemFragment : Fragment() {
                 productEan.setText(it.ean)
                 productSize.setText(it.size?.toString())
                 productUnit.setText(it.unit)
+                itemQuantity.requestFocus()
             } else {
                 productName.setText("")
                 productEan.setText("")
