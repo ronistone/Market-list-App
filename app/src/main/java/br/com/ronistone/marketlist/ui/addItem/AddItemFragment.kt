@@ -158,7 +158,7 @@ class AddItemFragment : Fragment() {
                 productSize.setText(it.productInstance.product.size?.toString())
                 productUnit.setText(it.productInstance.product.unit)
                 itemQuantity.setText(it.quantity.toString())
-                it.productInstance.price?.let { it1 -> itemPrice.setText(it1.toString()) }
+                it.productInstance.price?.let { it1 -> processPrice(it1) }
                 itemQuantity.requestFocus()
             } else {
                 productName.setText("")
@@ -172,6 +172,14 @@ class AddItemFragment : Fragment() {
 
 
         return root
+    }
+
+    private fun processPrice(it1: Int) {
+        var value: Double = it1.toDouble()
+        if (it1 != 0) {
+            value = it1 / 100.0
+        }
+        itemPrice.setText(value.toString())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
