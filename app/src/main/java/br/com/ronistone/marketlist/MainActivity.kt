@@ -18,14 +18,6 @@ import br.com.ronistone.marketlist.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-//    companion object {
-//        private const val REQUEST_CODE_PERMISSIONS = 10
-//        private val REQUIRED_PERMISSIONS =
-//            mutableListOf (
-//                Manifest.permission.CAMERA
-//            ).toTypedArray()
-//    }
-
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
@@ -75,8 +67,6 @@ class MainActivity : AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
 
-//        val deleteToolbarButton: MenuItem? = menu.findItem(R.id.action_delete)
-//        deleteToolbarButton?.isVisible = false
         return true
     }
 
