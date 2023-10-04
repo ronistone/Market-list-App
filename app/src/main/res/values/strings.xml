@@ -20,5 +20,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="button_update">Atualizar</string>
     <string name="required_field">Obrigatório</string>
+    <string name="price_per_unit">Você está pagando R$%s por %s %s</string>
     <!--    <string name="add_item_fragment_label">%s %s</string>-->
 </resources>

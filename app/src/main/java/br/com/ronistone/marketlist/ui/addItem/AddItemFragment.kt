@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.setFragmentResultListener
@@ -19,7 +20,6 @@ import br.com.ronistone.marketlist.MainActivity
 import br.com.ronistone.marketlist.R
 import br.com.ronistone.marketlist.adapter.ProductNameArrayAdapter
 import br.com.ronistone.marketlist.databinding.FragmentAddItemBinding
-import br.com.ronistone.marketlist.model.Market
 import br.com.ronistone.marketlist.model.Product
 import br.com.ronistone.marketlist.model.ProductInstance
 import br.com.ronistone.marketlist.model.Purchase
@@ -30,6 +30,7 @@ import java.lang.Double.parseDouble
 class AddItemFragment : Fragment() {
 
 
+    private lateinit var pricePerUnitText: TextView
     private lateinit var clearButton: Button
     private lateinit var cameraButton: Button
     private lateinit var itemPrice: EditText
@@ -68,6 +69,7 @@ class AddItemFragment : Fragment() {
         addButton = binding.purchaseItemAdd
         cameraButton = binding.productEanCameraOpen
         clearButton = binding.purchaseItemClearForm
+        pricePerUnitText = binding.pricePerUnit
 
         val productsNameAdapter = ProductNameArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         productName.setAdapter(productsNameAdapter)
@@ -94,6 +96,10 @@ class AddItemFragment : Fragment() {
             }
             navController?.navigate(R.id.action_nav_add_item_to_nav_camera_barcode)
         }
+
+        productSize.doOnTextChanged { _, _, _, _ -> updatePricePerUnit() }
+        productUnit.doOnTextChanged { _, _, _, _ -> updatePricePerUnit() }
+        itemPrice.doOnTextChanged { _, _, _, _ -> updatePricePerUnit() }
 
         addButton.setOnClickListener {
             val isValid = validateForm(root)
@@ -180,6 +186,40 @@ class AddItemFragment : Fragment() {
             value = it1 / 100.0
         }
         itemPrice.setText(value.toString())
+    }
+
+    private fun convertValue(value: String): Double? {
+        return try {
+            parseDouble(value)
+        } catch (e: Exception) {
+            null
+        }
+    }
+    private fun updatePricePerUnit() {
+        var price: String = itemPrice.text.toString()
+        var unit: String = productSize.text.toString()
+        var unitMetric: String = productUnit.text.toString()
+
+        var unitConverted = convertValue(unit)
+        unit = if(unitConverted != null) {
+            "1"
+        } else {
+            unitConverted = 1.0
+            "--"
+        }
+
+        val priceConverted = convertValue(price)
+        price = if(priceConverted != null) {
+            String.format("%.6f", priceConverted/unitConverted)
+        } else {
+            "--"
+        }
+
+        unitMetric = unitMetric.ifBlank {
+            "--"
+        }
+
+        pricePerUnitText.text = getString(R.string.price_per_unit, price, unit, unitMetric)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
