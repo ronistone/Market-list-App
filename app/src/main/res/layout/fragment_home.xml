@@ -30,7 +30,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintVertical_bias="0.096" android:id="@+id/PurchaseList"
-            tools:listitem="@layout/adapter_movie"
+            tools:listitem="@layout/purchase_item"
             android:visibility="invisible"
             android:layout_marginTop="24dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

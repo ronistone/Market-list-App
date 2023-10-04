@@ -12,6 +12,7 @@
             tools:layout="@layout/fragment_home">
         <action android:id="@+id/action_nav_home_to_nav_create_purchase"
                 app:destination="@id/nav_create_purchase"/>
+        <action android:id="@+id/action_nav_home_to_nav_purchase" app:destination="@id/nav_purchase"/>
     </fragment>
 
     <fragment
@@ -39,4 +40,47 @@
                 app:popUpToInclusive="true"
         />
     </fragment>
+
+    <fragment
+            android:id="@+id/nav_purchase"
+            android:name="br.com.ronistone.marketlist.ui.purchase.PurchaseFragment"
+            android:label="@string/menu_purchase"
+            tools:layout="@layout/fragment_puchase">
+        <action android:id="@+id/action_nav_purchase_to_nav_home"
+                app:destination="@id/nav_home"
+                app:popUpTo="@+id/nav_home"
+                app:popUpToInclusive="true"
+        />
+        <action
+                android:id="@+id/action_nav_purchase_to_nav_add_item"
+                app:destination="@id/nav_add_item"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_camera_barcode"
+            android:name="br.com.ronistone.marketlist.ui.addItem.CameraFragment"
+            android:label="@string/menu_add_item"
+            tools:layout="@layout/fragment_camera">
+
+        <action android:id="@+id/action_nav_camera_barcode_to_nav_add_item"
+                app:destination="@id/nav_add_item"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_add_item"
+            android:name="br.com.ronistone.marketlist.ui.addItem.AddItemFragment"
+            android:label="@string/menu_add_item"
+            tools:layout="@layout/fragment_add_item"
+    >
+
+        <action
+                android:id="@+id/action_nav_add_item_to_nav_purchase"
+                app:destination="@id/nav_purchase"
+                app:popUpTo="@+id/nav_purchase"/>
+        <action
+                android:id="@+id/action_nav_add_item_to_nav_camera_barcode"
+                app:destination="@id/nav_camera_barcode"/>
+    </fragment>
+
+
 </navigation>

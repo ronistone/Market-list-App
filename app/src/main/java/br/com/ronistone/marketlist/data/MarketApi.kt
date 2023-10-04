@@ -28,7 +28,7 @@ interface MarketApi {
         fun create(): MarketApi {
             val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.BASE_API_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(JsonConverterFactory.create())
                 .build()
 
             return retrofit.create(MarketApi::class.java)
