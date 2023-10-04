@@ -23,6 +23,7 @@ import br.com.ronistone.marketlist.R
 import br.com.ronistone.marketlist.adapter.PurchaseItemDetailsLookup
 import br.com.ronistone.marketlist.adapter.PurchaseItemKeyProvider
 import br.com.ronistone.marketlist.databinding.FragmentPuchaseBinding
+import br.com.ronistone.marketlist.helper.ItemClickSupport
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class PurchaseFragment : Fragment() {
@@ -69,6 +70,16 @@ class PurchaseFragment : Fragment() {
         adapter = PurchaseItemAdapter(purchaseViewModel, emptyList())
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(activity)
+
+        ItemClickSupport.addTo(recyclerView!!).setOnItemClickListener(object : ItemClickSupport.OnItemClickListener {
+            override fun onItemClicked(recyclerView: RecyclerView?, position: Int, v: View?) {
+                val bundle = Bundle()
+                bundle.putInt("purchaseItemId", adapter.currentList[position].id!!)
+                bundle.putInt("purchaseId", purchaseId!!)
+                navController?.navigate(R.id.action_nav_purchase_to_nav_add_item, bundle)
+                Log.i("RECYCLE VIEW sCLICK", "I CLICKED IN ${adapter.currentList[position]}")
+            }
+        })
 
         purchaseViewModel.purchase.observe(viewLifecycleOwner) { purchase ->
             if(purchase == null) {

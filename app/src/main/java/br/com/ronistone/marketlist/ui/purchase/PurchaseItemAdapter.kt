@@ -74,6 +74,7 @@ class PurchaseItemAdapter(val purchaseViewModel: PuchaseViewModel, var items: Li
     @SuppressLint("NotifyDataSetChanged")
     override fun replaceItems(items: List<*>) {
         this.items = items as List<PurchaseItem>
+        this.submitList(items)
         notifyDataSetChanged()
     }
 

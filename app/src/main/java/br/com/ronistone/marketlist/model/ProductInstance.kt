@@ -6,7 +6,7 @@ data class ProductInstance @JvmOverloads constructor(
     val id: Int? = null,
     val product: Product,
     val market: Market? = null,
-    val price: Int?,
+    val price: Int? = null,
     val createdAt: Date? = null
 ) {
     override fun toString(): String {

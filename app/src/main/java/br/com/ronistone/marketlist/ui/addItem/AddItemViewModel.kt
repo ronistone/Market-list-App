@@ -7,6 +7,7 @@ import br.com.ronistone.marketlist.data.ProductApi
 import br.com.ronistone.marketlist.data.PurchaseItemApi
 import br.com.ronistone.marketlist.data.RequestHandler
 import br.com.ronistone.marketlist.model.Product
+import br.com.ronistone.marketlist.model.ProductInstance
 import br.com.ronistone.marketlist.model.Purchase
 import br.com.ronistone.marketlist.model.PurchaseItem
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +18,22 @@ class AddItemViewModel : RequestHandler() {
     val purchaseItemApi: PurchaseItemApi = PurchaseItemApi.create()
 
     val productsSearch = MutableLiveData<List<Product>>()
-    val selectedProduct = MutableLiveData<Product?>()
+    val selectedProduct = MutableLiveData<PurchaseItem?>()
     val purchase = MutableLiveData<Purchase>()
+
+    var purchaseId = MutableLiveData<Int?>()
+
+    var purchaseItemId = MutableLiveData<Int?>()
+
+    val isEdition get() = (purchaseItemId.value != null)
+
+    fun selectProduct(product: Product) {
+        selectedProduct.postValue(PurchaseItem(
+            productInstance = ProductInstance(
+                product = product,
+            )
+        ))
+    }
 
 
     fun queryName(view: View, name: String) {
@@ -43,7 +58,7 @@ class AddItemViewModel : RequestHandler() {
             val response = productApi.getProductByEan(ean)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    selectedProduct.postValue(response.body())
+                    selectProduct(response.body()!!)
                 } else {
                     Log.e("AddItemViewModel", "Error: ${response.message()}")
                     onFinish()
@@ -62,6 +77,36 @@ class AddItemViewModel : RequestHandler() {
                     onError(view, errorMessage)
                 } else {
                     onsuccess?.let { it() }
+                }
+            }
+        }
+    }
+
+    fun updateItem(view: View, purchaseItem: PurchaseItem, onsuccess: (() -> Unit)? = null) {
+        val errorMessage = "Failed to Update item"
+        this.processRequest(view, errorMessage) {
+            val response = purchaseItemApi.updateItem(purchaseItem.purchase?.id!!, purchaseItem.id!!, purchaseItem)
+            withContext(Dispatchers.Main) {
+                if (!response.isSuccessful) {
+                    Log.e("AddItemViewModel", "Error: ${response.message()}")
+                    onError(view, errorMessage)
+                } else {
+                    onsuccess?.let { it() }
+                }
+            }
+        }
+    }
+
+    fun fetchItem(view: View, purchaseId: Int, purchaseItemId: Int) {
+        val errorMessage = "Failed to Get item"
+        this.processRequest(view, errorMessage) {
+            val response = purchaseItemApi.getItem(purchaseId, purchaseItemId)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    selectedProduct.postValue(response.body())
+                } else {
+                    Log.e("AddItemViewModel", "Error: ${response.message()}")
+                    onError(view, errorMessage)
                 }
             }
         }

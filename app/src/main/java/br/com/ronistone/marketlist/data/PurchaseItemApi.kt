@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -18,6 +19,9 @@ interface PurchaseItemApi {
 
     @DELETE("v1/purchase/{purchaseId}/item/{itemId}")
     suspend fun removeItem(@Path("purchaseId") purchaseId: Int, @Path("itemId") itemId: Int): Response<Purchase>
+
+    @GET("v1/purchase/{purchaseId}/item/{itemId}")
+    suspend fun getItem(@Path("purchaseId") purchaseId: Int, @Path("itemId") itemId: Int): Response<PurchaseItem>
 
     @PUT("v1/purchase/{purchaseId}/item/{itemId}")
     suspend fun updateItem(@Path("purchaseId") purchaseId: Int, @Path("itemId") itemId: Int, @Body item: PurchaseItem): Response<Purchase>

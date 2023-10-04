@@ -10,13 +10,16 @@ import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import br.com.ronistone.marketlist.MainActivity
 import br.com.ronistone.marketlist.R
 import br.com.ronistone.marketlist.adapter.ProductNameArrayAdapter
 import br.com.ronistone.marketlist.databinding.FragmentAddItemBinding
+import br.com.ronistone.marketlist.model.Market
 import br.com.ronistone.marketlist.model.Product
 import br.com.ronistone.marketlist.model.ProductInstance
 import br.com.ronistone.marketlist.model.Purchase
@@ -26,9 +29,9 @@ import java.lang.Double.parseDouble
 
 class AddItemFragment : Fragment() {
 
+
     private lateinit var clearButton: Button
     private lateinit var cameraButton: Button
-    private var purchaseId: Int? = null
     private lateinit var itemPrice: EditText
     private lateinit var addButton: Button
     private lateinit var itemQuantity: EditText
@@ -38,6 +41,7 @@ class AddItemFragment : Fragment() {
     private lateinit var productName: AutoCompleteTextView
     private var _binding: FragmentAddItemBinding? = null
     private var navController: NavController? = null
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -77,7 +81,7 @@ class AddItemFragment : Fragment() {
 
         productName.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, _ ->
             val product = productsNameAdapter.getItem(position)
-            viewModel.selectedProduct.postValue(product)
+            viewModel.selectProduct(product!!)
         }
 
         cameraButton.setOnClickListener {
@@ -94,11 +98,14 @@ class AddItemFragment : Fragment() {
         addButton.setOnClickListener {
             val isValid = validateForm(root)
             if (isValid) {
+                val item = viewModel.selectedProduct.value
                 val purchaseItem = PurchaseItem(
+                    id = item?.id,
                     purchase = Purchase(
-                        id = purchaseId
+                        id = viewModel.purchaseId.value
                     ),
                     productInstance = ProductInstance(
+                        id = item?.productInstance?.id,
                         price = (if(itemPrice.text.isNotBlank()){
                             (parseDouble(itemPrice.text.toString()) * 100).toInt()
                         } else {
@@ -106,17 +113,25 @@ class AddItemFragment : Fragment() {
                         }),
 
                         product = Product(
+                            id = item?.productInstance?.product?.id,
                             ean = productEan.text?.toString(),
                             name = productName.text.toString(),
                             size = Integer.parseInt(productSize.text.toString()),
                             unit = productUnit.text.toString()
-                        )
+                        ),
+                        market = item?.productInstance?.market
                     ),
                     quantity = Integer.parseInt(itemQuantity.text.toString())
 
                 )
-                viewModel.addItem(root, purchaseItem){
-                    goPurchase()
+                if(viewModel.isEdition) {
+                    viewModel.updateItem(root, purchaseItem){
+                        goPurchase()
+                    }
+                } else {
+                    viewModel.addItem(root, purchaseItem) {
+                        goPurchase()
+                    }
                 }
             }
         }
@@ -134,17 +149,24 @@ class AddItemFragment : Fragment() {
         }
 
         viewModel.selectedProduct.observe(viewLifecycleOwner) {
+            if(viewModel.isEdition) {
+                addButton.text = getString(R.string.button_update)
+            }
             if(it != null) {
-                productName.setText(it.name)
-                productEan.setText(it.ean)
-                productSize.setText(it.size?.toString())
-                productUnit.setText(it.unit)
+                productName.setText(it.productInstance.product.name)
+                productEan.setText(it.productInstance.product.ean)
+                productSize.setText(it.productInstance.product.size?.toString())
+                productUnit.setText(it.productInstance.product.unit)
+                itemQuantity.setText(it.quantity.toString())
+                it.productInstance.price?.let { it1 -> itemPrice.setText(it1.toString()) }
                 itemQuantity.requestFocus()
             } else {
                 productName.setText("")
                 productEan.setText("")
                 productSize.setText("")
                 productUnit.setText("")
+                itemQuantity.setText("")
+                itemPrice.setText("")
             }
         }
 
@@ -159,11 +181,27 @@ class AddItemFragment : Fragment() {
 
         val bundle = this.arguments
 
-        purchaseId = bundle?.getInt("purchaseId")
+        val purchaseId = bundle?.getInt("purchaseId")
+        viewModel.purchaseId.postValue(purchaseId)
 
         if(purchaseId == null) {
             goPurchase()
         }
+
+        viewModel.purchaseItemId.observe(viewLifecycleOwner) {
+            if(it != null) {
+                viewModel.fetchItem(view, purchaseId!!, it)
+            }
+        }
+
+        if(bundle?.containsKey("purchaseItemId") == true) {
+            viewModel.purchaseItemId.postValue(bundle.getInt("purchaseItemId"))
+            val mainActivity = activity as MainActivity
+            val toolbar = mainActivity.findViewById<Toolbar>(R.id.toolbar)
+            toolbar.title = resources.getString(R.string.menu_update_item)
+        }
+
+
     }
 
     private fun goPurchase() {
@@ -174,19 +212,19 @@ class AddItemFragment : Fragment() {
         val fields = ArrayList<String>()
         if (productName.text.isBlank()) {
             fields.add("Nome do Produto")
-            productName.error = "Obrigatório"
+            productName.error = getString(R.string.required_field)
         }
         if (productSize.text.isBlank()) {
             fields.add("Tamanho do Produto")
-            productSize.error = "Obrigatório"
+            productSize.error = getString(R.string.required_field)
         }
         if (productUnit.text.isBlank()) {
             fields.add("Unidade do Tamanho do Produto")
-            productUnit.error = "Obrigatório"
+            productUnit.error = getString(R.string.required_field)
         }
         if (itemQuantity.text.isBlank()) {
             fields.add("Quantidade de Produtos Pegos")
-            itemQuantity.error = "Obrigatório"
+            itemQuantity.error = getString(R.string.required_field)
         }
         if (fields.isNotEmpty()) {
             val fieldsMsg = if (fields.size > 1) {
