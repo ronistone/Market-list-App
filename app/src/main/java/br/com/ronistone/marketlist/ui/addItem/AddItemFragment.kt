@@ -120,7 +120,7 @@ class AddItemFragment : Fragment() {
 
                         product = Product(
                             id = item?.productInstance?.product?.id,
-                            ean = productEan.text?.toString(),
+                            ean = if (productEan.text.isBlank()) null else productEan.text?.toString(),
                             name = productName.text.toString(),
                             size = Integer.parseInt(productSize.text.toString()),
                             unit = productUnit.text.toString()
