@@ -8,8 +8,8 @@ data class Purchase(
     val market: Market? = null,
     val createdAt: Date? = null,
     val items: List<PurchaseItem>? = null,
-    val marketId: Long? = null,
-    val userId: Long? = null,
+    val marketId: Int? = null,
+    val userId: Int? = null,
     var totalSpent: Long = 0,
     var totalExpected: Long = 0,
 ) {

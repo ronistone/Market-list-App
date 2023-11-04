@@ -50,14 +50,14 @@ class PurchaseFragment : Fragment() {
         fun newInstance() = PurchaseFragment()
     }
 
-    private lateinit var viewModel: PuchaseViewModel
+    private lateinit var viewModel: PurchaseViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val purchaseViewModel =
-            ViewModelProvider(this).get(PuchaseViewModel::class.java)
+            ViewModelProvider(this).get(PurchaseViewModel::class.java)
 
         _binding = FragmentPuchaseBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -133,7 +133,7 @@ class PurchaseFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PuchaseViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(PurchaseViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

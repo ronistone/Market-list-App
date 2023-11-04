@@ -4,7 +4,7 @@ import br.com.ronistone.marketlist.model.Market
 import java.util.Date
 
 class MarketHolder(
-    id: Long?,
+    id: Int?,
     name: String,
     createdAt: Date?,
     updatedAt: Date?,

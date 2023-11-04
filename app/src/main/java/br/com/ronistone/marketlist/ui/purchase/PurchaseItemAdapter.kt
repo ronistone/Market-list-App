@@ -16,12 +16,12 @@ import br.com.ronistone.marketlist.databinding.PurchaseDetailsItemBinding
 import br.com.ronistone.marketlist.model.PurchaseItem
 import br.com.ronistone.marketlist.ui.home.AdapterItemsContract
 
-class PurchaseItemAdapter(val purchaseViewModel: PuchaseViewModel, var items: List<PurchaseItem>): ListAdapter<PurchaseItem, PurchaseItemAdapter.ViewHolder>(ItemComparator()),
+class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: List<PurchaseItem>): ListAdapter<PurchaseItem, PurchaseItemAdapter.ViewHolder>(ItemComparator()),
     AdapterItemsContract {
 
     var tracker: SelectionTracker<String>? = null
 
-    class ViewHolder(val purchaseViewModel: PuchaseViewModel, val binding: PurchaseDetailsItemBinding, val context: Context): RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val purchaseViewModel: PurchaseViewModel, val binding: PurchaseDetailsItemBinding, val context: Context): RecyclerView.ViewHolder(binding.root) {
 
         var item: PurchaseItem? = null
         var itemAdapterPosition: Int? = null
@@ -75,7 +75,7 @@ class PurchaseItemAdapter(val purchaseViewModel: PuchaseViewModel, var items: Li
     override fun replaceItems(items: List<*>) {
         this.items = items as List<PurchaseItem>
         this.submitList(items)
-        notifyDataSetChanged()
+//        notifyDataSetChanged()
     }
 
     class ItemComparator : DiffUtil.ItemCallback<PurchaseItem>() {
