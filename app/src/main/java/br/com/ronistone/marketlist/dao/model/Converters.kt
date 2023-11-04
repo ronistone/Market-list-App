@@ -96,7 +96,7 @@ class Converters {
 
         fun purchaseItemWithDependenciesToPurchaseItem(inner: PurchaseItemWithDependencies): PurchaseItem {
             return PurchaseItem(
-                id = inner.purchaseItem.purchaseId,
+                id = inner.purchaseItem.id,
                 purchase = Purchase(id = inner.purchaseItem.purchaseId),
                 productInstance = productInstanceWithDependenciesToProductInstance(inner.productInstance),
                 createdAt = inner.purchaseItem.createdAt,
