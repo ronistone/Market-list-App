@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import br.com.ronistone.marketlist.data.MarketApi
 import br.com.ronistone.marketlist.model.Market
+import br.com.ronistone.marketlist.repository.MarketRepository
 import br.com.ronistone.marketlist.ui.home.AdapterItemsContract
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -22,7 +23,6 @@ import java.lang.Exception
 class CreateMarketViewModel : ViewModel() {
 
     val marketName: MutableLiveData<String> = MutableLiveData<String>()
-    val marketApi: MarketApi = MarketApi.create()
 
     var marketCreateJob: Job? = null
     val exceptionHandler = CoroutineExceptionHandler { _, throwable -> onError("Exception handled: ${throwable.localizedMessage}")}
@@ -32,20 +32,22 @@ class CreateMarketViewModel : ViewModel() {
     }
 
     fun create(context: Context, view: View, callbackFunction: () -> Unit ): Job? {
+        val marketRepository = MarketRepository.getInstance(context)
         marketCreateJob = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             if(marketName.value == null || marketName.value!!.isEmpty()) {
                 Snackbar.make(context, view, "Nome está inválido", Snackbar.LENGTH_LONG).show()
             } else {
                 try {
-                    val response = marketApi.createMarket(Market(name = marketName.value!!))
-                    withContext(Dispatchers.Main) {
-                        if(response.isSuccessful) {
+                    val isSuccessful = marketRepository.create(Market(name = marketName.value!!))
+                    if(isSuccessful) {
+                        withContext(Dispatchers.Main) {
                             callbackFunction()
-                        } else {
-                            Snackbar.make(context, view, "Falha ao criar o novo Mercado, tente novamente", Snackbar.LENGTH_LONG).show()
                         }
+                    } else {
+                        Snackbar.make(context, view, "Falha ao criar o novo Mercado, tente novamente", Snackbar.LENGTH_LONG).show()
                     }
                 } catch (e: Exception) {
+                    Log.e("CREATE MARKET", "Fail to create market", e)
                     Snackbar.make(context, view, "Falha ao criar o novo Mercado, tente novamente", Snackbar.LENGTH_LONG).show()
                 }
 

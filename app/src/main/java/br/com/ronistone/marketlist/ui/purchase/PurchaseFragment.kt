@@ -50,14 +50,13 @@ class PurchaseFragment : Fragment() {
         fun newInstance() = PurchaseFragment()
     }
 
-    private lateinit var viewModel: PuchaseViewModel
+    private lateinit var viewModel: PurchaseViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val purchaseViewModel =
-            ViewModelProvider(this).get(PuchaseViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(PurchaseViewModel::class.java)
 
         _binding = FragmentPuchaseBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -67,7 +66,7 @@ class PurchaseFragment : Fragment() {
 
         recyclerView = binding.PurchaseList
 
-        adapter = PurchaseItemAdapter(purchaseViewModel, emptyList())
+        adapter = PurchaseItemAdapter(viewModel, emptyList())
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(activity)
 
@@ -81,7 +80,7 @@ class PurchaseFragment : Fragment() {
             }
         })
 
-        purchaseViewModel.purchase.observe(viewLifecycleOwner) { purchase ->
+        viewModel.purchase.observe(viewLifecycleOwner) { purchase ->
             if(purchase == null) {
                 goHome()
             } else {
@@ -96,7 +95,7 @@ class PurchaseFragment : Fragment() {
                 purchaseTotalSpent.text = "Valor Gasto: R$ %.2f".format(totalSpent)
                 purchaseTotalExpected.text = "Valor Esperado: R$ %.2f".format(totalExpected)
                 itemsWithoutPrice.text = "Itens Sem Preço: %d".format(itemsWithoutPriceQtd)
-                purchase.items?.let { adapter.submitList(it) }
+                purchase.items?.sorted().let { adapter.submitList(it) }
             }
         }
 
@@ -114,7 +113,7 @@ class PurchaseFragment : Fragment() {
             goHome()
         }
 
-        purchaseViewModel.fetch(root, purchaseId!!)
+        viewModel.fetch(root, purchaseId!!)
 
         return root
 
@@ -131,13 +130,6 @@ class PurchaseFragment : Fragment() {
         Log.i("PURCHASE", "onViewCreated")
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PuchaseViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
-
     private fun setupSelectionTracker() {
         tracker = createTracker()
         tracker.addObserver(trackerSelectionObserver)
@@ -147,7 +139,7 @@ class PurchaseFragment : Fragment() {
     private fun createTracker() = SelectionTracker.Builder(
         "selectionItem",
         binding.PurchaseList,
-        PurchaseItemKeyProvider(adapter!!),
+        PurchaseItemKeyProvider(adapter),
         PurchaseItemDetailsLookup(binding.PurchaseList),
         StorageStrategy.createStringStorage()
     ).withSelectionPredicate(

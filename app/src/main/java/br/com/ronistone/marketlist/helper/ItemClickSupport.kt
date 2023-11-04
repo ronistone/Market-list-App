@@ -13,7 +13,7 @@ class ItemClickSupport private constructor(private val mRecyclerView: RecyclerVi
     private val mOnClickListener = View.OnClickListener { v ->
         if (mOnItemClickListener != null) {
             val holder = mRecyclerView.getChildViewHolder(v)
-            mOnItemClickListener!!.onItemClicked(mRecyclerView, holder.getAdapterPosition(), v)
+            mOnItemClickListener!!.onItemClicked(mRecyclerView, holder.absoluteAdapterPosition, v)
         }
     }
     private val mOnLongClickListener = OnLongClickListener { v ->
@@ -21,7 +21,7 @@ class ItemClickSupport private constructor(private val mRecyclerView: RecyclerVi
             val holder = mRecyclerView.getChildViewHolder(v)
             return@OnLongClickListener mOnItemLongClickListener!!.onItemLongClicked(
                 mRecyclerView,
-                holder.getAdapterPosition(),
+                holder.absoluteAdapterPosition,
                 v
             )
         }
