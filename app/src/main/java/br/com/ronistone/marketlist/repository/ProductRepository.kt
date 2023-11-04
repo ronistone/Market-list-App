@@ -47,13 +47,14 @@ class ProductRepository private constructor(
     suspend fun getByEan(ean: String, result: MutableLiveData<PurchaseItem?>): Boolean {
         val response = productApi.getProductByEan(ean)
 
-        withContext(Dispatchers.Main) {
-            result.postValue(PurchaseItem(
-                productInstance = ProductInstance(
-                    product = response.body()!!,
-                )
-            ))
-        }
+        response.body()?.let {
+            withContext(Dispatchers.Main) {
+                val value = result.value?.copyChangingProduct(response.body()!!)
+                    ?: PurchaseItem(response.body()!!)
+                result.postValue(value)
+            }
+        } ?: return false
+
         return true
     }
 

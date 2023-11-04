@@ -28,11 +28,13 @@ class AddItemViewModel : BaseViewModelOperations() {
     val isEdition get() = (purchaseItemId.value != null)
 
     fun selectProduct(product: Product) {
-        selectedProduct.postValue(PurchaseItem(
+        val value = selectedProduct.value?.copyChangingProduct(product) ?: PurchaseItem(
             productInstance = ProductInstance(
                 product = product,
             )
-        ))
+        )
+
+        selectedProduct.postValue(value)
     }
 
 
@@ -52,6 +54,12 @@ class AddItemViewModel : BaseViewModelOperations() {
             val isSuccessful = productRepository.getByEan(ean, selectedProduct)
             withContext(Dispatchers.Main) {
                 if (!isSuccessful) {
+                    val selected = selectedProduct.value
+                    selectedProduct.postValue(
+                        selected?.copyChangingProduct(product = selected.productInstance.product
+                                .copy(ean = ean)
+                        )
+                    )
                     onFinish()
                 }
             }

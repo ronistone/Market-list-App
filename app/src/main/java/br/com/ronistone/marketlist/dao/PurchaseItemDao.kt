@@ -15,7 +15,7 @@ interface PurchaseItemDao {
     fun getAllByPurchase(purchaseId: Int): List<PurchaseItemWithDependencies>
 
     @Query("SELECT * FROM purchaseitem WHERE purchaseId = :purchaseId AND id = :purchaseItemId")
-    fun getItem(purchaseId: Int, purchaseItemId: Int): PurchaseItemWithDependencies
+    fun getItem(purchaseId: Int, purchaseItemId: Int): PurchaseItemWithDependencies?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(purchaseItems: PurchaseItem)

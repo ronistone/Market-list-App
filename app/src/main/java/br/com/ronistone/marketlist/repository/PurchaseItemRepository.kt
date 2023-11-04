@@ -41,9 +41,12 @@ class PurchaseItemRepository private constructor(
     suspend fun fetchItem(purchaseId: Int, itemId: Int, result: MutableLiveData<PurchaseItem?>): Boolean {
         val item = purchaseItemDao.getItem(purchaseId, itemId)
 
-        val purchaseResult = Converters.purchaseItemWithDependenciesToPurchaseItem(item)
+        item?.let {
+            val purchaseResult = Converters.purchaseItemWithDependenciesToPurchaseItem(item)
 
-        result.postValue(purchaseResult)
+            result.postValue(purchaseResult)
+        }
+
 
         val apiResponse = purchaseItemApi.getItem(purchaseId, itemId)
         withContext(Dispatchers.Main) {

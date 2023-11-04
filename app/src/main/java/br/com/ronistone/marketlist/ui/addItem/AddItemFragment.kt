@@ -92,7 +92,6 @@ class AddItemFragment : Fragment() {
                 viewModel.queryEan(root, result!!) {
                     productEan.setText(result)
                 }
-
             }
             navController?.navigate(R.id.action_nav_add_item_to_nav_camera_barcode)
         }
@@ -237,7 +236,7 @@ class AddItemFragment : Fragment() {
         }
 
         viewModel.purchaseItemId.observe(viewLifecycleOwner) {
-            if(it != null) {
+            if(it != null && !viewModel.selectedProduct.isInitialized) {
                 viewModel.fetchItem(view, purchaseId!!, it)
             }
         }
