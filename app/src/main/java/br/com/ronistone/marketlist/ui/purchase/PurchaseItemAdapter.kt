@@ -75,12 +75,11 @@ class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: L
     override fun replaceItems(items: List<*>) {
         this.items = items as List<PurchaseItem>
         this.submitList(items)
-//        notifyDataSetChanged()
     }
 
     class ItemComparator : DiffUtil.ItemCallback<PurchaseItem>() {
         override fun areItemsTheSame(oldItem: PurchaseItem, newItem: PurchaseItem): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: PurchaseItem, newItem: PurchaseItem): Boolean {
