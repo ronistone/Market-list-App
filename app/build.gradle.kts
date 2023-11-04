@@ -39,7 +39,7 @@ android {
 dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
