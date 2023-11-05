@@ -54,10 +54,10 @@ class AddItemViewModel : BaseViewModelOperations() {
             val isSuccessful = productRepository.getByEan(ean, selectedProduct)
             withContext(Dispatchers.Main) {
                 if (!isSuccessful) {
-                    val selected = selectedProduct.value
+                    val selected = selectedProduct.value ?: PurchaseItem(product = Product())
                     selectedProduct.postValue(
-                        selected?.copyChangingProduct(product = selected.productInstance.product
-                                .copy(ean = ean)
+                        selected.copyChangingProduct(product = selected.productInstance.product
+                            .copy(ean = ean, id = null)
                         )
                     )
                     onFinish()

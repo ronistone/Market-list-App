@@ -1,5 +1,6 @@
 package br.com.ronistone.marketlist.adapter
 
+import android.annotation.SuppressLint
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,7 +21,8 @@ class ItemComparator<T : ItemHolder> : DiffUtil.ItemCallback<T>() {
         return oldItem.id() == newItem.id()
     }
 
+    @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-        return oldItem.id() == newItem.id()
+        return oldItem.hashCode() == newItem.hashCode()
     }
 }

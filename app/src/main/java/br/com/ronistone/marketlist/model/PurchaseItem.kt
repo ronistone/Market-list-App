@@ -34,11 +34,35 @@ data class PurchaseItem @JvmOverloads constructor(
         return this.purchased.compareTo(other.purchased)
     }
 
+
+
     override fun id(): Int {
         return id ?: 0
     }
 
     override fun toString(): String {
         return "PurchaseItem(id=$id, purchase=$purchase, productInstance=$productInstance, createdAt=$createdAt, quantity=$quantity, purchased=$purchased)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PurchaseItem
+
+        if (id != other.id) return false
+        if (productInstance != other.productInstance) return false
+        if (quantity != other.quantity) return false
+        if (purchased != other.purchased) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id ?: 0
+        result = 31 * result + productInstance.hashCode()
+        result = 31 * result + quantity
+        result = 31 * result + purchased.hashCode()
+        return result
     }
 }
