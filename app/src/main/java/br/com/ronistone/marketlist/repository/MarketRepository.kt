@@ -39,12 +39,13 @@ class MarketRepository(
 
         val markets = marketDao.getAll()
         Log.i("DATABASE", markets.toString())
-        response.postValue(markets.map { Converters.marketDaoToMarket(it)!! })
+        val marketsConverted: List<Market> = markets.map { Converters.marketDaoToMarket(it)!! }
+        response.postValue(marketsConverted.sorted())
 
         val apiResponse = marketApi.listMarkets()
         withContext(Dispatchers.Main) {
             if (apiResponse.isSuccessful) {
-                response.postValue(apiResponse.body())
+                response.postValue(apiResponse.body()?.sorted())
 
             } else {
                 throw RuntimeException("Fail to fetch")

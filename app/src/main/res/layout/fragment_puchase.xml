@@ -17,6 +17,15 @@
             app:layout_constraintBottom_toTopOf="@+id/purchase_description"
             tools:layout_editor_absoluteX="0dp"
             app:layout_constraintVertical_bias="0.052"/>
+    <TextView
+            android:id="@+id/emptyPurchase"
+            android:gravity="center"
+            android:text="Você ainda não tem produtos cadastrados!\nCrie um novo no botão + abaixo"
+            android:textSize="25sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+    />
     <LinearLayout
             android:id="@+id/purchase_description"
             android:layout_width="match_parent"

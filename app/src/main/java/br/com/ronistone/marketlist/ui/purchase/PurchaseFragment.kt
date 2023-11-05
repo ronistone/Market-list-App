@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.TextView
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.Toolbar
@@ -17,11 +18,13 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import br.com.ronistone.marketlist.MainActivity
 import br.com.ronistone.marketlist.R
-import br.com.ronistone.marketlist.adapter.PurchaseItemDetailsLookup
-import br.com.ronistone.marketlist.adapter.PurchaseItemKeyProvider
+import br.com.ronistone.marketlist.adapter.ItemHolder
+import br.com.ronistone.marketlist.adapter.ListItemDetailsLookup
+import br.com.ronistone.marketlist.adapter.ItemKeyProvider
 import br.com.ronistone.marketlist.databinding.FragmentPuchaseBinding
 import br.com.ronistone.marketlist.helper.ItemClickSupport
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -63,6 +66,7 @@ class PurchaseFragment : Fragment() {
         val purchaseTotalSpent: TextView = binding.purchaseTotalSpent
         val purchaseTotalExpected: TextView = binding.purchaseTotalExpected
         val itemsWithoutPrice: TextView = binding.purchaseWithoutPrice
+        val emptyPurchase = binding.emptyPurchase
 
         recyclerView = binding.PurchaseList
 
@@ -96,6 +100,13 @@ class PurchaseFragment : Fragment() {
                 purchaseTotalExpected.text = "Valor Esperado: R$ %.2f".format(totalExpected)
                 itemsWithoutPrice.text = "Itens Sem Preço: %d".format(itemsWithoutPriceQtd)
                 purchase.items?.sorted().let { adapter.submitList(it) }
+                if(purchase.items == null || purchase.items.isEmpty()) {
+                    recyclerView?.visibility = AdapterView.GONE
+                    emptyPurchase.visibility = AdapterView.VISIBLE
+                } else {
+                    recyclerView?.visibility = AdapterView.VISIBLE
+                    emptyPurchase.visibility = AdapterView.GONE
+                }
             }
         }
 
@@ -139,8 +150,8 @@ class PurchaseFragment : Fragment() {
     private fun createTracker() = SelectionTracker.Builder(
         "selectionItem",
         binding.PurchaseList,
-        PurchaseItemKeyProvider(adapter),
-        PurchaseItemDetailsLookup(binding.PurchaseList),
+        ItemKeyProvider(adapter as ListAdapter<ItemHolder, *>),
+        ListItemDetailsLookup(binding.PurchaseList),
         StorageStrategy.createStringStorage()
     ).withSelectionPredicate(
         SelectionPredicates.createSelectAnything()
