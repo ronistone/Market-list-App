@@ -71,6 +71,7 @@ class PurchaseFragment : Fragment() {
         recyclerView = binding.PurchaseList
 
         adapter = PurchaseItemAdapter(viewModel, emptyList())
+        adapter.setHasStableIds(true)
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(activity)
 
@@ -195,11 +196,15 @@ class PurchaseFragment : Fragment() {
             navController?.navigate(R.id.action_nav_purchase_to_nav_add_item, bundle)
         }
         deleteToolbarButton?.setOnClickListener {
-            adapter!!.currentList.filter {
-                tracker.selection.contains(it.id.toString())
-            }.forEach {item ->
-                Log.i("TOOLBAR", "REMOVE ITEM ${item.id}")
-                viewModel.removeItem(it, item)
+            val itemsToDelete = mutableListOf<Int>()
+            adapter!!.currentList.forEachIndexed { index, item ->
+                if (tracker.selection.contains(item.id.toString())) {
+                    viewModel.removeItem(it, item)
+                    itemsToDelete += index
+                }
+            }
+            viewModel.joinJobs {
+                viewModel.fetch(it, purchaseId!!)
             }
         }
     }

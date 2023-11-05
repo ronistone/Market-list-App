@@ -56,6 +56,10 @@ class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: L
 
     }
 
+    override fun getItemId(position: Int): Long {
+        return this.currentList[position].id!!.toLong()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding: PurchaseDetailsItemBinding = PurchaseDetailsItemBinding.inflate(inflater, parent, false)

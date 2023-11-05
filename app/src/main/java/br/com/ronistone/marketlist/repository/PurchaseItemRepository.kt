@@ -69,13 +69,10 @@ class PurchaseItemRepository private constructor(
         return null
     }
 
-    suspend fun removeItem(item: PurchaseItem): Purchase? {
-        val response = purchaseItemApi.removeItem(item.purchase?.id!!, item.id!!)
-        response.body()?.let {
-            updatePurchase(it)
-            return response.body()
-        }
-        return null
+    suspend fun removeItem(item: PurchaseItem): Boolean {
+        purchaseItemApi.removeItem(item.purchase?.id!!, item.id!!)
+        purchaseItemDao.deleteItem(item.purchase.id, item.id)
+        return true
     }
 
     suspend fun addItem(item: PurchaseItem): Purchase? {

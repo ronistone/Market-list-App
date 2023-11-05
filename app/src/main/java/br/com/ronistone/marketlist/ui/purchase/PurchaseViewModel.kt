@@ -44,7 +44,7 @@ class PurchaseViewModel : BaseViewModelOperations() {
         val itemRepository = PurchaseRepository.getInstance(view.context)
         val message = "Não foi possível deletar o item"
         processRequest(view, message) {
-            val isSuccessful = itemRepository.removePurchaseItem(item, purchase)
+            val isSuccessful = itemRepository.removePurchaseItem(item)
             if(!isSuccessful) {
                 onError(view, message, RuntimeException("Fail to update item"))
             }

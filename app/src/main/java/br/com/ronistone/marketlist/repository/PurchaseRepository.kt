@@ -1,17 +1,14 @@
 package br.com.ronistone.marketlist.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import br.com.ronistone.marketlist.Database
 import br.com.ronistone.marketlist.dao.MarketDao
 import br.com.ronistone.marketlist.dao.PurchaseDao
-import br.com.ronistone.marketlist.dao.PurchaseItemDao
 import br.com.ronistone.marketlist.dao.model.Converters
 import br.com.ronistone.marketlist.data.PurchaseApi
 import br.com.ronistone.marketlist.model.Purchase
 import br.com.ronistone.marketlist.model.PurchaseItem
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.RuntimeException
@@ -61,13 +58,8 @@ class PurchaseRepository private constructor(
         return true
     }
 
-    suspend fun removePurchaseItem(item: PurchaseItem, result: MutableLiveData<Purchase?>): Boolean {
-        val purchase = purchaseItemRepository.removeItem(item) ?: return false
-        purchaseDao.insert(Converters.purchaseModelToPurchaseDao(purchase))
-        withContext(Dispatchers.Main) {
-            result.postValue(purchase)
-        }
-        return true
+    suspend fun removePurchaseItem(item: PurchaseItem): Boolean {
+        return purchaseItemRepository.removeItem(item)
     }
 
     suspend fun addPurchaseItem(item: PurchaseItem): Boolean {

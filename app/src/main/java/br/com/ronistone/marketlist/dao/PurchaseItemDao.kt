@@ -23,4 +23,7 @@ interface PurchaseItemDao {
     @Query("DELETE FROM purchaseitem WHERE purchaseId = :purchaseId")
     fun cleanPurchaseItems(purchaseId: Int)
 
+    @Query("DELETE FROM purchaseitem WHERE purchaseId = :purchaseId AND id = :itemId")
+    fun deleteItem(purchaseId: Int, itemId: Int)
+
 }
