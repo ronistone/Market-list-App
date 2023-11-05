@@ -8,20 +8,24 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import br.com.ronistone.marketlist.R
+import br.com.ronistone.marketlist.adapter.ItemComparator
+import br.com.ronistone.marketlist.adapter.ItemHolderDetails
 import br.com.ronistone.marketlist.databinding.PurchaseDetailsItemBinding
 import br.com.ronistone.marketlist.model.PurchaseItem
 import br.com.ronistone.marketlist.ui.home.AdapterItemsContract
 
-class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: List<PurchaseItem>): ListAdapter<PurchaseItem, PurchaseItemAdapter.ViewHolder>(ItemComparator()),
+class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: List<PurchaseItem>): ListAdapter<PurchaseItem, PurchaseItemAdapter.ViewHolder>(
+    ItemComparator()
+),
     AdapterItemsContract {
 
     var tracker: SelectionTracker<String>? = null
 
-    class ViewHolder(val purchaseViewModel: PurchaseViewModel, val binding: PurchaseDetailsItemBinding, val context: Context): RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val purchaseViewModel: PurchaseViewModel, val binding: PurchaseDetailsItemBinding, val context: Context):
+        ItemHolderDetails, RecyclerView.ViewHolder(binding.root) {
 
         var item: PurchaseItem? = null
         var itemAdapterPosition: Int? = null
@@ -44,7 +48,7 @@ class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: L
             this.itemAdapterPosition = position
         }
 
-        fun getItemDetails(): ItemDetailsLookup.ItemDetails<String> =
+        override fun getItemDetails(): ItemDetailsLookup.ItemDetails<String> =
             object : ItemDetailsLookup.ItemDetails<String>() {
                 override fun getPosition(): Int = itemAdapterPosition!!
                 override fun getSelectionKey(): String = item?.id.toString()
@@ -75,15 +79,5 @@ class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: L
     override fun replaceItems(items: List<*>) {
         this.items = items as List<PurchaseItem>
         this.submitList(items)
-    }
-
-    class ItemComparator : DiffUtil.ItemCallback<PurchaseItem>() {
-        override fun areItemsTheSame(oldItem: PurchaseItem, newItem: PurchaseItem): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: PurchaseItem, newItem: PurchaseItem): Boolean {
-            return oldItem.id == newItem.id
-        }
     }
 }

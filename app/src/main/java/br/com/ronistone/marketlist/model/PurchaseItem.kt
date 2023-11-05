@@ -1,5 +1,6 @@
 package br.com.ronistone.marketlist.model
 
+import br.com.ronistone.marketlist.adapter.ItemHolder
 import java.util.Date
 
 data class PurchaseItem @JvmOverloads constructor(
@@ -9,7 +10,7 @@ data class PurchaseItem @JvmOverloads constructor(
     val createdAt: Date? = null,
     val quantity: Int = 1,
     var purchased: Boolean = false
-) : Comparable<PurchaseItem> {
+) : ItemHolder, Comparable<PurchaseItem> {
 
     constructor(product: Product) : this(productInstance = ProductInstance(product = product))
 
@@ -31,6 +32,10 @@ data class PurchaseItem @JvmOverloads constructor(
         }
 
         return this.purchased.compareTo(other.purchased)
+    }
+
+    override fun id(): Int {
+        return id ?: 0
     }
 
     override fun toString(): String {

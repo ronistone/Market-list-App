@@ -5,19 +5,29 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.Button
+import android.widget.AdapterView.GONE
+import android.widget.AdapterView.VISIBLE
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import br.com.ronistone.marketlist.R
+import br.com.ronistone.marketlist.adapter.ItemHolder
+import br.com.ronistone.marketlist.adapter.ListItemDetailsLookup
+import br.com.ronistone.marketlist.adapter.ItemKeyProvider
 import br.com.ronistone.marketlist.databinding.FragmentCreatePurchaseBinding
-import br.com.ronistone.marketlist.model.Market
+import br.com.ronistone.marketlist.helper.ItemClickSupport
 
 class CreatePurchaseFragment : Fragment() {
 
+    private var marketListAdapter: CreatePurchaseMarketAdapter? = null
+    private var marketListView: RecyclerView? = null
     private var _binding: FragmentCreatePurchaseBinding? = null
     private var navController: NavController? = null
     private var createPurchaseViewModel : CreatePurchaseViewModel? = null
@@ -25,6 +35,8 @@ class CreatePurchaseFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var tracker: SelectionTracker<String>
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -37,39 +49,29 @@ class CreatePurchaseFragment : Fragment() {
         _binding = FragmentCreatePurchaseBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val spinnerMarketList = binding.marketList
+        val emptyMarketText = binding.emptyMarket
         val createPurchaseButton = binding.createPurchaseButton
         val createMarketButton = binding.purchaseCreateMarketButton
-        val marketListAdapter = container?.context?.let {
-            CreatePurchaseMarketSpinnerAdapter(it, android.R.layout.simple_spinner_dropdown_item, mutableListOf())
-        }
-        marketListAdapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        marketListView = binding.marketList
+        marketListAdapter = CreatePurchaseMarketAdapter(emptyList(), createPurchaseViewModel!!)
 
-        spinnerMarketList.adapter = marketListAdapter
+        marketListView?.layoutManager = LinearLayoutManager(activity)
+        marketListView?.adapter = marketListAdapter
+
+        ItemClickSupport.addTo(marketListView!!).setOnItemClickListener(object : ItemClickSupport.OnItemClickListener {
+            override fun onItemClicked(recyclerView: RecyclerView?, position: Int, v: View?) {
+                marketListAdapter!!.onSelect(position)
+            }
+        })
 
         createPurchaseViewModel!!.markets.observe(viewLifecycleOwner) {
             if(it == null || it.isEmpty()) {
-                Log.i("MARKET ITEMS", "null value")
-                marketListAdapter?.replaceEmpty()
-                spinnerMarketList.isActivated = false
+                marketListView?.visibility = GONE
+                emptyMarketText.visibility = VISIBLE
             } else {
-                Log.i("MARKET ITEMS", it.toString())
-                val holders = it.map { it.toHolder() }
-                marketListAdapter?.replaceItems(holders)
-                marketListAdapter?.notifyDataSetChanged()
-                spinnerMarketList.isActivated = true
-            }
-        }
-
-        spinnerMarketList.onItemSelectedListener = object : OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                createPurchaseViewModel!!.selectedMarket.postValue(parent?.getItemAtPosition(position) as Market?)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                if(createPurchaseViewModel!!.markets.value != null && !createPurchaseViewModel!!.markets.value!!.isEmpty()) {
-                  spinnerMarketList.prompt = "Selecione um mercado!"
-                }
+                marketListView?.visibility = VISIBLE
+                emptyMarketText.visibility = GONE
+                marketListAdapter!!.replaceItems(it)
             }
         }
 
@@ -84,27 +86,33 @@ class CreatePurchaseFragment : Fragment() {
             navController?.navigate(R.id.action_nav_create_purchase_to_nav_create_market)
         }
 
+        setupSelectionTracker()
         createPurchaseViewModel!!.loadMarkets(root)
         Log.i("CREATE PURCHASE", "onCreateView")
 
         return root
     }
 
+    private fun setupSelectionTracker() {
+        tracker = createTracker()
+        marketListAdapter?.tracker = tracker
+    }
+
+    private fun createTracker() = SelectionTracker.Builder(
+        "selectionMarket",
+        binding.marketList,
+        ItemKeyProvider(marketListAdapter as ListAdapter<ItemHolder, *>),
+        ListItemDetailsLookup(binding.marketList),
+        StorageStrategy.createStringStorage()
+    ).withSelectionPredicate(
+        SelectionPredicates.createSelectAnything()
+    ).build()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         navController = findNavController(view)
         Log.i("CREATE PURCHASE", "onViewCreated")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.i("CREATE PURCHASE", "onStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("CREATE PURCHASE", "onResume")
     }
 
     override fun onDestroyView() {

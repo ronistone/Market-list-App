@@ -101,13 +101,12 @@ class PurchaseRepository private constructor(
     suspend fun fetchPurchases(response: MutableLiveData<List<Purchase>>) {
 
         val purchases = purchaseDao.getAll()
-        Log.i("DATABASE", purchases.toString())
-        response.postValue(purchases.map { Converters.purchaseWithDependenciesToPurchase(it) })
+        response.postValue(purchases.map { Converters.purchaseWithDependenciesToPurchase(it) }.sorted())
 
         val apiResponse = purchaseApi.listPurchases()
         withContext(Dispatchers.Main) {
             if (apiResponse.isSuccessful) {
-                response.postValue(apiResponse.body())
+                response.postValue(apiResponse.body()?.sorted())
 
             } else {
                 throw RuntimeException("Fail to fetch")
