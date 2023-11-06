@@ -18,8 +18,7 @@ interface ProductDao {
     @Query("""
        DELETE FROM product WHERE id in (
             SELECT p.id FROM product p 
-                        INNER JOIN productinstance pi ON pi.productId = p.id
-                        INNER JOIN purchaseitem pu ON pu.productInstanceId = pi.id
+                        INNER JOIN purchaseitem pu ON pu.productId = p.id
                 WHERE pu.purchaseId = :purchaseId
             ) 
     """)

@@ -8,8 +8,8 @@ class PurchaseItemWithDependencies (
     @Embedded
     var purchaseItem: PurchaseItem,
 
-    @Relation( entity = ProductInstance::class, parentColumn = "productInstanceId", entityColumn = "id" )
-    var productInstance: ProductInstanceWithDependencies
+    @Relation( parentColumn = "productId", entityColumn = "id" )
+    val product: Product? = null
 
 ) {
 }

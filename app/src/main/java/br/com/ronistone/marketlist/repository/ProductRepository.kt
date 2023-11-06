@@ -7,7 +7,6 @@ import br.com.ronistone.marketlist.dao.ProductDao
 import br.com.ronistone.marketlist.dao.model.Converters
 import br.com.ronistone.marketlist.data.ProductApi
 import br.com.ronistone.marketlist.model.Product
-import br.com.ronistone.marketlist.model.ProductInstance
 import br.com.ronistone.marketlist.model.PurchaseItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -50,7 +49,7 @@ class ProductRepository private constructor(
         response.body()?.let {
             withContext(Dispatchers.Main) {
                 val value = result.value?.copyChangingProduct(response.body()!!)
-                    ?: PurchaseItem(response.body()!!)
+                    ?: PurchaseItem(product = response.body()!!)
                 result.postValue(value)
             }
         } ?: return false

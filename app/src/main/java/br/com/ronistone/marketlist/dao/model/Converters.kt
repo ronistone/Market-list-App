@@ -1,10 +1,7 @@
 package br.com.ronistone.marketlist.dao.model
 
-import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
-import br.com.ronistone.marketlist.dao.PurchaseDao
 import br.com.ronistone.marketlist.model.Market
-import br.com.ronistone.marketlist.model.ProductInstance
 import br.com.ronistone.marketlist.model.Purchase
 import br.com.ronistone.marketlist.model.PurchaseItem
 import java.util.Date
@@ -60,73 +57,15 @@ class Converters {
             }
         }
 
-        fun productInstanceWithDependenciesToProductInstance(inner: ProductInstanceWithDependencies): ProductInstance {
-            return ProductInstance(
-                id = inner.productInstance.id,
-                product = productDaoToProductModel(inner.product!!),
-                market = marketDaoToMarket(inner.market),
-                price = inner.productInstance.price,
-                createdAt = inner.productInstance.createdAt
-            )
-        }
-
-        fun productInstanceToProductInstanceWithDependencies(inner: ProductInstance): ProductInstanceWithDependencies {
-            return ProductInstanceWithDependencies(
-                productInstance = ProductInstance(
-                    id = inner.id,
-                    price = inner.price,
-                    createdAt = inner.createdAt,
-                    productId = inner.product.id!!,
-                    marketId = inner.market?.id,
-                ),
-                market = marketToMarketDao(inner.market),
-                product = productModelToProductDao(inner.product),
-            )
-        }
-
-        fun productInstanceModelToProductInstanceDao(inner: ProductInstance): br.com.ronistone.marketlist.dao.model.ProductInstance {
-            return ProductInstance(
-                id = inner.id,
-                price = inner.price,
-                createdAt = inner.createdAt,
-                productId = inner.product.id!!,
-                marketId = inner.market?.id,
-            )
-        }
-
         fun purchaseItemWithDependenciesToPurchaseItem(inner: PurchaseItemWithDependencies): PurchaseItem {
             return PurchaseItem(
                 id = inner.purchaseItem.id,
-                purchase = Purchase(id = inner.purchaseItem.purchaseId),
-                productInstance = productInstanceWithDependenciesToProductInstance(inner.productInstance),
                 createdAt = inner.purchaseItem.createdAt,
                 quantity = inner.purchaseItem.quantity,
-                purchased = inner.purchaseItem.purchased
+                purchased = inner.purchaseItem.purchased,
+                product = productDaoToProductModel(inner.product!!)
             )
         }
-
-        fun purchaseItemDaoToPurchaseItem(inner: br.com.ronistone.marketlist.dao.model.PurchaseItem): PurchaseItem {
-            return inner.let {
-                PurchaseItem(
-                    id = inner.id,
-                    purchase = Purchase(id = inner.id),
-                    productInstance = ProductInstance(id = inner.productInstanceId, product = br.com.ronistone.marketlist.model.Product()),
-                    createdAt = inner.createdAt,
-                    quantity = inner.quantity,
-                    purchased = inner.purchased
-                )
-            }
-        }
-
-//        fun productInstanceDaoToProductInstanceModel(inner: br.com.ronistone.marketlist.dao.model.ProductInstance): ProductInstance {
-//            return ProductInstance(
-//                id = inner.id,
-//                product = br.com.ronistone.marketlist.model.Product(id = inner.productId),
-//                market = Market(id = inner.marketId),
-//                price = null,
-//                createdAt = null
-//            )
-//        }
 
         fun productDaoToProductModel(inner: Product): br.com.ronistone.marketlist.model.Product {
             return br.com.ronistone.marketlist.model.Product(
@@ -157,7 +96,7 @@ class Converters {
             return PurchaseWithDependencies(
                 user = userToUserDao(inner.user),
                 market = marketToMarketDao(inner.market),
-                items = inner.items?.map { purchaseItemToPurchaseItemWithDependencies(it) },
+                items = inner.items?.map { purchaseItemToPurchaseItemWithDependencies(it, inner.id) },
                 purchase = br.com.ronistone.marketlist.dao.model.Purchase(
                     createdAt = inner.createdAt,
                     id = inner.id,
@@ -205,21 +144,21 @@ class Converters {
             }
         }
 
-        fun purchaseItemToPurchaseItemDao(inner: PurchaseItem): br.com.ronistone.marketlist.dao.model.PurchaseItem {
+        fun purchaseItemToPurchaseItemDao(inner: PurchaseItem, purchaseId: Int?): br.com.ronistone.marketlist.dao.model.PurchaseItem {
             return PurchaseItem(
                 id = inner.id,
                 createdAt = inner.createdAt,
                 quantity = inner.quantity,
                 purchased = inner.purchased,
-                purchaseId = inner.purchase!!.id,
-                productInstanceId = inner.productInstance.id
+                purchaseId = purchaseId,
+                productId = inner.product.id!!,
             )
         }
 
-        fun purchaseItemToPurchaseItemWithDependencies(inner: PurchaseItem): PurchaseItemWithDependencies {
+        fun purchaseItemToPurchaseItemWithDependencies(inner: PurchaseItem, purchaseId: Int?): PurchaseItemWithDependencies {
             return PurchaseItemWithDependencies(
-                purchaseItem = purchaseItemToPurchaseItemDao(inner),
-                productInstance = productInstanceToProductInstanceWithDependencies(inner.productInstance)
+                purchaseItem = purchaseItemToPurchaseItemDao(inner, purchaseId),
+                product = productModelToProductDao(inner.product),
             )
         }
     }

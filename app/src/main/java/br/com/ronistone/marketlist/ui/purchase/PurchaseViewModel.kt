@@ -29,22 +29,22 @@ class PurchaseViewModel : BaseViewModelOperations() {
 
     }
 
-    fun updateItem(view: View, item: PurchaseItem) {
+    fun updateItem(view: View, item: PurchaseItem, purchaseId: Int) {
         val itemRepository = PurchaseRepository.getInstance(view.context)
         val message = "Não foi possível atualizar o item"
         processRequest(view, message) {
-            val isSuccessful = itemRepository.updatePurchaseItem(item, purchase)
+            val isSuccessful = itemRepository.updatePurchaseItem(item, purchaseId, purchase)
             if(!isSuccessful) {
                 onError(view, message, RuntimeException("Fail to update item"))
             }
         }
     }
 
-    fun removeItem(view: View, item: PurchaseItem) {
+    fun removeItem(view: View, item: PurchaseItem, purchaseId: Int) {
         val itemRepository = PurchaseRepository.getInstance(view.context)
         val message = "Não foi possível deletar o item"
         processRequest(view, message) {
-            val isSuccessful = itemRepository.removePurchaseItem(item)
+            val isSuccessful = itemRepository.removePurchaseItem(item, purchaseId)
             if(!isSuccessful) {
                 onError(view, message, RuntimeException("Fail to update item"))
             }
