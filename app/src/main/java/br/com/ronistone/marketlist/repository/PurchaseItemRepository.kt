@@ -15,7 +15,7 @@ import java.lang.RuntimeException
 class PurchaseItemRepository private constructor(
     private val purchaseItemApi: PurchaseItemApi,
     private val purchaseItemDao: PurchaseItemDao,
-    private val productInstanceRepository: ProductInstanceRepository
+    private val productRepository: ProductRepository,
 
 ) {
 
@@ -29,7 +29,7 @@ class PurchaseItemRepository private constructor(
                         instance = PurchaseItemRepository(
                             PurchaseItemApi.create(),
                             Database.getDatabase(context)!!.purchaseItemDao(),
-                            ProductInstanceRepository.getInstance(context)
+                            ProductRepository.getInstance(context)
                         )
                     }
                 }
@@ -60,8 +60,8 @@ class PurchaseItemRepository private constructor(
         return true
     }
 
-    suspend fun updateItem(item: PurchaseItem): Purchase? {
-        val response = purchaseItemApi.updateItem(item.purchase?.id!!, item.id!!, item)
+    suspend fun updateItem(item: PurchaseItem, purchaseId: Int): Purchase? {
+        val response = purchaseItemApi.updateItem(purchaseId, item.id!!, item)
         response.body()?.let {
             updatePurchase(it)
             return response.body()
@@ -69,14 +69,14 @@ class PurchaseItemRepository private constructor(
         return null
     }
 
-    suspend fun removeItem(item: PurchaseItem): Boolean {
-        purchaseItemApi.removeItem(item.purchase?.id!!, item.id!!)
-        purchaseItemDao.deleteItem(item.purchase.id, item.id)
+    suspend fun removeItem(item: PurchaseItem, purchaseId: Int): Boolean {
+        purchaseItemApi.removeItem(purchaseId, item.id!!)
+        purchaseItemDao.deleteItem(purchaseId, item.id)
         return true
     }
 
-    suspend fun addItem(item: PurchaseItem): Purchase? {
-        val response = purchaseItemApi.addItem(item.purchase?.id!!, item)
+    suspend fun addItem(item: PurchaseItem, purchaseId: Int): Purchase? {
+        val response = purchaseItemApi.addItem(purchaseId, item)
         response.body()?.let {
             updatePurchase(it)
             return response.body()
@@ -86,10 +86,10 @@ class PurchaseItemRepository private constructor(
 
     suspend fun updatePurchase(purchase: Purchase) {
         purchaseItemDao.cleanPurchaseItems(purchase.id!!)
-        productInstanceRepository.cleanByPurchase(purchase.id)
+        productRepository.cleanByPurchase(purchase.id)
         purchase.items?.forEach {
-            productInstanceRepository.create(it.productInstance, purchase.id)
-            val item = Converters.purchaseItemToPurchaseItemDao(it)
+            productRepository.create(it.product, purchase.id)
+            val item = Converters.purchaseItemToPurchaseItemDao(it, purchase.id)
             purchaseItemDao.insert(item)
         }
     }

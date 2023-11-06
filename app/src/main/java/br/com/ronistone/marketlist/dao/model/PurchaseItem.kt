@@ -12,12 +12,13 @@ data class PurchaseItem @JvmOverloads constructor(
     var createdAt: Date? = null,
     var quantity: Int = 1,
     var purchased: Boolean = false,
-    var productInstanceId: Int? = null,
     var purchaseId: Int? = null,
+    val productId: Int,
+    val price: Int? = null,
 
 ) {
 
     override fun toString(): String {
-        return "PurchaseItem(id=$id, createdAt=$createdAt, quantity=$quantity, purchased=$purchased, productInstanceId=$productInstanceId, purchaseId=$purchaseId)"
+        return "PurchaseItem(id=$id, createdAt=$createdAt, quantity=$quantity, purchased=$purchased, purchaseId=$purchaseId, productId=$productId, price=$price)"
     }
 }

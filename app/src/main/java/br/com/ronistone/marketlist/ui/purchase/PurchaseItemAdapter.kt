@@ -31,9 +31,9 @@ class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: L
         var itemAdapterPosition: Int? = null
 
         fun bind(item: PurchaseItem, position: Int) {
-            binding.purchaseMarket.text = item.productInstance.product.name
-            if(item.productInstance.price != null){
-                binding.purchaseValue.text = "%d x R$ %.2f".format(item.quantity, item.productInstance.price / 100.0)
+            binding.purchaseMarket.text = item.product.name
+            if(item.price != null){
+                binding.purchaseValue.text = "%d x R$ %.2f".format(item.quantity, item.price / 100.0)
             } else {
                 binding.purchaseValue.text = "%d x R$ ---".format(item.quantity)
             }
@@ -42,7 +42,7 @@ class PurchaseItemAdapter(val purchaseViewModel: PurchaseViewModel, var items: L
             binding.purchased.setOnClickListener {
                 Log.i("PURCHASE ITEM", item.toString())
                 item.purchased = binding.purchased.isChecked
-                purchaseViewModel.updateItem(it, item)
+                purchaseViewModel.updateItem(it, item, purchaseViewModel.purchase.value!!.id!!)
             }
             this.item = item
             this.itemAdapterPosition = position

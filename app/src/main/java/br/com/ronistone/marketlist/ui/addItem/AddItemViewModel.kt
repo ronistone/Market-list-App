@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import br.com.ronistone.marketlist.model.Product
-import br.com.ronistone.marketlist.model.ProductInstance
 import br.com.ronistone.marketlist.model.Purchase
 import br.com.ronistone.marketlist.model.PurchaseItem
 import br.com.ronistone.marketlist.repository.ProductRepository
@@ -29,9 +28,7 @@ class AddItemViewModel : BaseViewModelOperations() {
 
     fun selectProduct(product: Product) {
         val value = selectedProduct.value?.copyChangingProduct(product) ?: PurchaseItem(
-            productInstance = ProductInstance(
-                product = product,
-            )
+            product = product,
         )
 
         selectedProduct.postValue(value)
@@ -56,7 +53,7 @@ class AddItemViewModel : BaseViewModelOperations() {
                 if (!isSuccessful) {
                     val selected = selectedProduct.value ?: PurchaseItem(product = Product())
                     selectedProduct.postValue(
-                        selected.copyChangingProduct(product = selected.productInstance.product
+                        selected.copyChangingProduct(product = selected.product
                             .copy(ean = ean, id = null)
                         )
                     )
@@ -66,11 +63,11 @@ class AddItemViewModel : BaseViewModelOperations() {
         }
     }
 
-    fun addItem(view: View, purchaseItem: PurchaseItem, onsuccess: (() -> Unit)? = null) {
+    fun addItem(view: View, purchaseItem: PurchaseItem, purchaseId: Int, onsuccess: (() -> Unit)? = null) {
         val purchaseRepository = PurchaseRepository.getInstance(view.context)
         val errorMessage = "Failed to Add item"
         processRequest(view, errorMessage) {
-            val isSuccessful = purchaseRepository.addPurchaseItem(purchaseItem)
+            val isSuccessful = purchaseRepository.addPurchaseItem(purchaseItem, purchaseId)
             withContext(Dispatchers.Main) {
                 if (isSuccessful) {
                     onsuccess?.let { it() }
@@ -79,11 +76,11 @@ class AddItemViewModel : BaseViewModelOperations() {
         }
     }
 
-    fun updateItem(view: View, purchaseItem: PurchaseItem, onsuccess: (() -> Unit)? = null) {
+    fun updateItem(view: View, purchaseItem: PurchaseItem, purchaseId: Int, onsuccess: (() -> Unit)? = null) {
         val purchaseRepository = PurchaseRepository.getInstance(view.context)
         val errorMessage = "Failed to Update item"
         processRequest(view, errorMessage) {
-            val response = purchaseRepository.updatePurchaseItem(purchaseItem)
+            val response = purchaseRepository.updatePurchaseItem(purchaseItem, purchaseId)
             withContext(Dispatchers.Main) {
                 if (response != null) {
                     onsuccess?.let { it() }

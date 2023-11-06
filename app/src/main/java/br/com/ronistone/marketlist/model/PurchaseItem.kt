@@ -5,21 +5,19 @@ import java.util.Date
 
 data class PurchaseItem @JvmOverloads constructor(
     val id: Int? = null,
-    val purchase: Purchase? = null,
-    val productInstance: ProductInstance,
-    val createdAt: Date? = null,
+    val product: Product,
     val quantity: Int = 1,
-    var purchased: Boolean = false
+    var purchased: Boolean = false,
+    val price: Int? = null,
+    val createdAt: Date? = null
 ) : ItemHolder, Comparable<PurchaseItem> {
 
-    constructor(product: Product) : this(productInstance = ProductInstance(product = product))
-
     fun copyChangingProduct(product: Product): PurchaseItem {
-        return this.copy(productInstance = productInstance.copy(product = product))
+        return this.copy(product = product)
     }
 
     fun name(): String? {
-        return this.productInstance.product.name
+        return this.product.name
     }
 
     override fun compareTo(other: PurchaseItem): Int {
@@ -41,7 +39,7 @@ data class PurchaseItem @JvmOverloads constructor(
     }
 
     override fun toString(): String {
-        return "PurchaseItem(id=$id, purchase=$purchase, productInstance=$productInstance, createdAt=$createdAt, quantity=$quantity, purchased=$purchased)"
+        return "PurchaseItem(id=$id, product=$product, quantity=$quantity, purchased=$purchased, price=$price, createdAt=$createdAt)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -51,18 +49,22 @@ data class PurchaseItem @JvmOverloads constructor(
         other as PurchaseItem
 
         if (id != other.id) return false
-        if (productInstance != other.productInstance) return false
+        if (product != other.product) return false
         if (quantity != other.quantity) return false
         if (purchased != other.purchased) return false
+        if (price != other.price) return false
+        if (createdAt != other.createdAt) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = id ?: 0
-        result = 31 * result + productInstance.hashCode()
+        result = 31 * result + product.hashCode()
         result = 31 * result + quantity
         result = 31 * result + purchased.hashCode()
+        result = 31 * result + (price ?: 0)
+        result = 31 * result + (createdAt?.hashCode() ?: 0)
         return result
     }
 }

@@ -96,7 +96,7 @@ class PurchaseFragment : Fragment() {
                 setTitle()
                 val totalSpent = purchase.totalSpent / 100.0
                 val totalExpected = purchase.totalExpected / 100.0
-                val itemsWithoutPriceQtd = purchase.items?.filter { it.productInstance.price == null }?.count() ?: 0
+                val itemsWithoutPriceQtd = purchase.items?.filter { it.price == null }?.count() ?: 0
                 purchaseTotalSpent.text = "Valor Gasto: R$ %.2f".format(totalSpent)
                 purchaseTotalExpected.text = "Valor Esperado: R$ %.2f".format(totalExpected)
                 itemsWithoutPrice.text = "Itens Sem Preço: %d".format(itemsWithoutPriceQtd)
@@ -199,7 +199,7 @@ class PurchaseFragment : Fragment() {
             val itemsToDelete = mutableListOf<Int>()
             adapter!!.currentList.forEachIndexed { index, item ->
                 if (tracker.selection.contains(item.id.toString())) {
-                    viewModel.removeItem(it, item)
+                    viewModel.removeItem(it, item, purchaseId!!)
                     itemsToDelete += index
                 }
             }

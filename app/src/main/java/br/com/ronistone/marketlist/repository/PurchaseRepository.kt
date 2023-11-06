@@ -46,8 +46,8 @@ class PurchaseRepository private constructor(
         return response.isSuccessful
     }
 
-    suspend fun updatePurchaseItem(item: PurchaseItem, result: MutableLiveData<Purchase?>? = null): Boolean {
-        val purchase = purchaseItemRepository.updateItem(item) ?: return false
+    suspend fun updatePurchaseItem(item: PurchaseItem, purchaseId: Int, result: MutableLiveData<Purchase?>? = null): Boolean {
+        val purchase = purchaseItemRepository.updateItem(item, purchaseId) ?: return false
         purchaseDao.insert(Converters.purchaseModelToPurchaseDao(purchase))
         result?.let {
             withContext(Dispatchers.Main) {
@@ -58,12 +58,12 @@ class PurchaseRepository private constructor(
         return true
     }
 
-    suspend fun removePurchaseItem(item: PurchaseItem): Boolean {
-        return purchaseItemRepository.removeItem(item)
+    suspend fun removePurchaseItem(item: PurchaseItem, purchaseId: Int): Boolean {
+        return purchaseItemRepository.removeItem(item, purchaseId)
     }
 
-    suspend fun addPurchaseItem(item: PurchaseItem): Boolean {
-        val purchase = purchaseItemRepository.addItem(item) ?: return false
+    suspend fun addPurchaseItem(item: PurchaseItem, purchaseId: Int): Boolean {
+        val purchase = purchaseItemRepository.addItem(item, purchaseId) ?: return false
         purchaseDao.insert(Converters.purchaseModelToPurchaseDao(purchase))
         return true
     }

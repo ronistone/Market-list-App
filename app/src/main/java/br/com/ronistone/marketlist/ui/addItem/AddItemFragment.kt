@@ -21,7 +21,6 @@ import br.com.ronistone.marketlist.R
 import br.com.ronistone.marketlist.adapter.ProductNameArrayAdapter
 import br.com.ronistone.marketlist.databinding.FragmentAddItemBinding
 import br.com.ronistone.marketlist.model.Product
-import br.com.ronistone.marketlist.model.ProductInstance
 import br.com.ronistone.marketlist.model.Purchase
 import br.com.ronistone.marketlist.model.PurchaseItem
 import com.google.android.material.snackbar.Snackbar
@@ -106,35 +105,28 @@ class AddItemFragment : Fragment() {
                 val item = viewModel.selectedProduct.value
                 val purchaseItem = PurchaseItem(
                     id = item?.id,
-                    purchase = Purchase(
-                        id = viewModel.purchaseId.value
-                    ),
-                    productInstance = ProductInstance(
-                        id = item?.productInstance?.id,
-                        price = (if(itemPrice.text.isNotBlank()){
-                            (parseDouble(itemPrice.text.toString()) * 100).toInt()
-                        } else {
-                            null
-                        }),
+                    price = (if(itemPrice.text.isNotBlank()){
+                        (parseDouble(itemPrice.text.toString()) * 100).toInt()
+                    } else {
+                        null
+                    }),
 
-                        product = Product(
-                            id = item?.productInstance?.product?.id,
-                            ean = if (productEan.text.isBlank()) null else productEan.text?.toString(),
-                            name = productName.text.toString(),
-                            size = Integer.parseInt(productSize.text.toString()),
-                            unit = productUnit.text.toString()
-                        ),
-                        market = item?.productInstance?.market
+                    product = Product(
+                        id = item?.product?.id,
+                        ean = if (productEan.text.isBlank()) null else productEan.text?.toString(),
+                        name = productName.text.toString(),
+                        size = Integer.parseInt(productSize.text.toString()),
+                        unit = productUnit.text.toString()
                     ),
                     quantity = Integer.parseInt(itemQuantity.text.toString())
 
                 )
                 if(viewModel.isEdition) {
-                    viewModel.updateItem(root, purchaseItem){
+                    viewModel.updateItem(root, purchaseItem, viewModel.purchaseId.value!!){
                         goPurchase()
                     }
                 } else {
-                    viewModel.addItem(root, purchaseItem) {
+                    viewModel.addItem(root, purchaseItem, viewModel.purchaseId.value!!) {
                         goPurchase()
                     }
                 }
@@ -158,12 +150,12 @@ class AddItemFragment : Fragment() {
                 addButton.text = getString(R.string.button_update)
             }
             if(it != null) {
-                productName.setText(it.productInstance.product.name)
-                productEan.setText(it.productInstance.product.ean)
-                productSize.setText(it.productInstance.product.size?.toString())
-                productUnit.setText(it.productInstance.product.unit)
+                productName.setText(it.product.name)
+                productEan.setText(it.product.ean)
+                productSize.setText(it.product.size?.toString())
+                productUnit.setText(it.product.unit)
                 itemQuantity.setText(it.quantity.toString())
-                it.productInstance.price?.let { it1 -> processPrice(it1) }
+                it.price?.let { it1 -> processPrice(it1) }
                 itemQuantity.requestFocus()
             } else {
                 productName.setText("")
